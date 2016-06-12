@@ -7,6 +7,8 @@ class Trabajo(descripcion: String, statBase: Stats, statPrincipal: String) {
   def getStatPrincipal: String = statPrincipal
   
   def getDescripcion: String = descripcion
+  
+  def getValorStatPrincipal: Int = statBase.get(statPrincipal)
 }
 
 class Guerrero extends Trabajo("Guerrero", new Stats(10,15,0,-10),"fuerza")
