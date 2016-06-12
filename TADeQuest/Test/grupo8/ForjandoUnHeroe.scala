@@ -18,7 +18,7 @@ class ForjandoUnHeroe {
    pepe = new Heroe(new Stats(100,31,20,15))
    
    cascoVikingo = new Sombrero("Casco vikingo", x => new Stats(10,0,0,0), x => x.getStatBase.get("fuerza") > 30)
-   
+  
   }
   
   @Test

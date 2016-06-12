@@ -20,12 +20,12 @@ class Inventario {
     
     item match {
       case Sombrero(des,cal,acep) => this.items("sombrero") = item.asInstanceOf[Sombrero] //se castea porque segun scala tipo Sombrero no es igual a un tipo Sombrero
-      case Armadura => this.items("armadura") = item.asInstanceOf[Armadura] //tampoco le gusta poner i @ Armadura
-      case ArmaDeUnaMano => this.itemAMano(item.asInstanceOf[ItemDeUnaMano])
+      case Armadura(des,cal,acep) => this.items("armadura") = item.asInstanceOf[Armadura] //tampoco le gusta poner i @ Armadura
+      case ArmaDeUnaMano(des,cal,acep) => this.itemAMano(item.asInstanceOf[ItemDeUnaMano])
 
-      case Escudo => this.itemAMano(item.asInstanceOf[Escudo])  //porque no le gusta el || arriba con el ArmaDeUnaMano
+      case Escudo(des,cal,acep) => this.itemAMano(item.asInstanceOf[Escudo])  //porque no le gusta el || arriba con el ArmaDeUnaMano
 
-      case ArmaDeDosManos =>
+      case ArmaDeDosManos(des,cal,acep) =>
         this.items("manoDer") = item.asInstanceOf[ItemDeDosManos]
         this.items("manoIzq") = this.items("manoDer")
 
