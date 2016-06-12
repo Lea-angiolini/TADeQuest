@@ -12,6 +12,9 @@ class ForjandoUnHeroe {
   var pepe: Heroe = null
   var cascoVikingo: Sombrero = null
   var palitoMagico: ArmaDeUnaMano = null
+  var armaduraElegante: Armadura = null
+  var arcoViejo: ArmaDeDosManos = null
+  var escudoAntiRobo: Escudo = null
   
   @Before
   def setup = {
@@ -25,6 +28,9 @@ class ForjandoUnHeroe {
    cascoVikingo = new Sombrero("Casco vikingo", x => new Stats(10,0,0,0), x => x.getStatBase.get("fuerza") > 30)
    palitoMagico = new ArmaDeUnaMano("Palito Mágico", x => new Stats(0,0,0,20), 
                      x => x.getTrabajo.getDescripcion == "Mago" || (x.getTrabajo.getDescripcion == "Ladron" && x.getStatBase.get("inteligencia") > 30))
+   armaduraElegante = new Armadura("Armadura Elegante-Sport", x => new Stats(-30,0,30,0), x => true)
+   arcoViejo = new ArmaDeDosManos("Arco Viejo", x => new Stats(0,20,0,0), x => true)
+   escudoAntiRobo = new Escudo("Escudo Anti-Robo", x => new Stats(20,0,0,0), x => x.getTrabajo.getDescripcion == "Ladron" && x.getStatBase.get("fuerza") >= 20) 
   }
   
   @Test
