@@ -2,16 +2,18 @@ package grupo8
 
 class Heroe(statBase: Stats) {
   
-  var statActual: Stats = null
+  var statActual: Stats = statBase
   var inventario: Inventario = new Inventario
   var trabajo: Trabajo = null
   
   def setTrabajo(trab: Trabajo) {
-    this.trabajo = trab  
+    this.trabajo = trab 
+    calcularStat
   }
   
   def descartarTrabajo {
     this.trabajo = null
+    calcularStat
   }
   
   def calcularStat {

@@ -8,23 +8,27 @@ class ForjandoUnHeroe {
   
   var ashe: Heroe = null
   var coco: Heroe = null
+  var pepe: Heroe = null
   var cascoVikingo: Sombrero = null
   
   @Before
   def setup = {
    ashe = new Heroe(new Stats(100,30,40,60)) 
    coco = new Heroe(new Stats(100,100,10,10))
-   
+   pepe = new Heroe(new Stats(100,31,20,15))
    
    cascoVikingo = new Sombrero("Casco vikingo", x => new Stats(10,0,0,0), x => x.getStatBase.get("fuerza") > 30)
+   
   }
   
   @Test
   def test_usarSombreroVikingo() = {
     ashe.equipar(cascoVikingo)
-    assertEquals(ashe.getStatBase.get("hp"), 100)
+    assertEquals(100, ashe.getStats.get("hp"))
     coco.equipar(cascoVikingo)
-    assertEquals(coco.getStats.get("hp"), 110)
+    assertEquals(110, coco.getStats.get("hp"))
+    pepe.equipar(cascoVikingo)
+    assertEquals(110, pepe.getStats.get("hp"))
   }
   
 }
