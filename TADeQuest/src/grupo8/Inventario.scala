@@ -6,7 +6,7 @@ class Inventario {
   
   val items:mutable.Map[String,Item] = mutable.Map()
   val talismanes: collection.mutable.Set[Talisman] = collection.mutable.Set[Talisman]()
-
+  
   private def itemAMano[T <: ItemDeUnaMano](item: T){
     if (!this.items.contains("manoIzq")) {
         this.items("manoIzq") = item.asInstanceOf[ItemDeUnaMano]
@@ -19,16 +19,17 @@ class Inventario {
   def equipar[U <: Item](item: U) {
     
     item match {
-      case Sombrero(des,cal,acep) => this.items("sombrero") = item.asInstanceOf[Sombrero] //se castea porque segun scala tipo Sombrero no es igual a un tipo Sombrero
-      case Armadura(des,cal,acep) => this.items("armadura") = item.asInstanceOf[Armadura] //tampoco le gusta poner i @ Armadura
-      case ArmaDeUnaMano(des,cal,acep) => this.itemAMano(item.asInstanceOf[ItemDeUnaMano])
+      case s @ Sombrero(des,cal,acep) => this.items("sombrero") = s
+      case a @ Armadura(des,cal,acep) => this.items("armadura") = a 
+      case a @ ArmaDeUnaMano(des,cal,acep) => this.itemAMano(a)
 
-      case Escudo(des,cal,acep) => this.itemAMano(item.asInstanceOf[Escudo])  //porque no le gusta el || arriba con el ArmaDeUnaMano
+      case e @ Escudo(des,cal,acep) => this.itemAMano(e)
 
-      case ArmaDeDosManos(des,cal,acep) =>
-        this.items("manoDer") = item.asInstanceOf[ItemDeDosManos]
+      case a @ ArmaDeDosManos(des,cal,acep) =>
+        this.items("manoDer") = a
         this.items("manoIzq") = this.items("manoDer")
-
+      
+      case t @ Talisman(des,cal,acep) => this.talismanes.add(t)
     }  
   }
   
@@ -38,5 +39,9 @@ class Inventario {
     items.foreach(f => (stat += f._2.calcularStatpara(heroe)))
     
     stat
+  }
+  
+  def calcularElementospermitidos(heroe: Heroe) {
+    for (i <- items; if (!i._2.puedeUsar(heroe))) {items.remove(i._1)}
   }
 }

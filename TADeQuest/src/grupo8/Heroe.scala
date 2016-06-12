@@ -9,11 +9,13 @@ class Heroe(statBase: Stats) {
   def setTrabajo(trab: Trabajo) {
     this.trabajo = trab 
     calcularStat
+    inventario.calcularElementospermitidos(this)
   }
   
   def descartarTrabajo {
     this.trabajo = null
     calcularStat
+    inventario.calcularElementospermitidos(this)
   }
   
   def calcularStat {
@@ -31,15 +33,11 @@ class Heroe(statBase: Stats) {
     }
   }
   
-  def getStatBase: Stats = {
-    this.statBase
-  }
+  def getStatBase: Stats = this.statBase
   
-  def getStats: Stats = {
-    this.statActual
-  }
+  def getStats: Stats = this.statActual
   
-  def getTrabajo: Trabajo = {
-    this.trabajo
-  }
+  def getTrabajo: Trabajo = this.trabajo
+  
+  def getInventario: Inventario = this.inventario
 }

@@ -1,13 +1,11 @@
 package grupo8
 
 abstract class Item(descripcion: String, calculoStat: Heroe => Stats, acepta: Heroe => Boolean) {//TODO ver si la funcion tiene que retornar algo
-  def calcularStatpara(heroe: Heroe): Stats = {
-    this.calculoStat(heroe)
-  }
   
-  def puedeUsar(heroe: Heroe): Boolean = {
-    this.acepta(heroe)
-  }
+  def calcularStatpara(heroe: Heroe): Stats = this.calculoStat(heroe)
+  
+  def puedeUsar(heroe: Heroe): Boolean = this.acepta(heroe)
+
 }
 
 case class Talisman(descripcion: String, calculoStat: (Heroe) => Stats, acepta: Heroe => Boolean) extends Item(descripcion, calculoStat, acepta)
