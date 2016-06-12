@@ -17,9 +17,9 @@ class Inventario {
   }
   
   def equipar[U <: Item](item: U) {
-        
+    
     item match {
-      case Sombrero => this.items("sombrero") = item.asInstanceOf[Sombrero] //se castea porque segun scala tipo Sombrero no es igual a un tipo Sombrero
+      case Sombrero(des,cal,acep) => this.items("sombrero") = item.asInstanceOf[Sombrero] //se castea porque segun scala tipo Sombrero no es igual a un tipo Sombrero
       case Armadura => this.items("armadura") = item.asInstanceOf[Armadura] //tampoco le gusta poner i @ Armadura
       case ArmaDeUnaMano => this.itemAMano(item.asInstanceOf[ItemDeUnaMano])
 
@@ -29,7 +29,7 @@ class Inventario {
         this.items("manoDer") = item.asInstanceOf[ItemDeDosManos]
         this.items("manoIzq") = this.items("manoDer")
 
-    }
+    }  
   }
   
   def calcularStat(heroe: Heroe):Stats = {

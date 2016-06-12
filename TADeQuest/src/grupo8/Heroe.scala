@@ -15,19 +15,25 @@ class Heroe(statBase: Stats) {
   }
   
   def calcularStat {
-    var statActual = new Stats(0,0,0,0)
-    this.statActual += statBase     
-    this.statActual += this.inventario.calcularStat(this)
+    this.statActual = new Stats(0,0,0,0)
+    this.statActual = this.statActual + this.statBase  
+    this.statActual = this.statActual + this.inventario.calcularStat(this)
     if(this.trabajo != null)
-      this.statActual += this.trabajo.getStats
+      this.statActual = this.statActual + this.trabajo.getStats
   }
   
   def equipar[U <: Item](item: U){
-    if(item.puedeUsar(this))
+    if(item.puedeUsar(this)){
       this.inventario.equipar(item)
+      calcularStat
+    }
   }
   
   def getStatBase: Stats = {
     this.statBase
+  }
+  
+  def getStats: Stats = {
+    this.statActual
   }
 }

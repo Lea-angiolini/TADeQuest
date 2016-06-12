@@ -15,7 +15,7 @@ class Stats(hp: Int,fuerza: Int, velocidad: Int, inteligencia: Int) {
     mapStats(nombre) = value
   }
   
-  def +=(stat: Stats): Stats = {
+  def +(stat: Stats): Stats = {
     for( n <- stat.getStats;
          m <- mapStats;
          if (m._1 == n._1) 
