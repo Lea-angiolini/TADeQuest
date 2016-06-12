@@ -38,4 +38,8 @@ class Heroe(statBase: Stats) {
   def getStats: Stats = {
     this.statActual
   }
+  
+  def getTrabajo: Trabajo = {
+    this.trabajo
+  }
 }
