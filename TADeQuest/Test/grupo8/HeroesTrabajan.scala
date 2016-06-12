@@ -60,4 +60,17 @@ class HeroesTrabajan {
     
   }
   
+  @Test
+  def test_dejaUnTrabajoMagoModificaStats() = {
+    
+    pikachu.setTrabajo(guerrero)
+    pikachu.descartarTrabajo
+    
+    assertEquals(pikachu.getStats.get("hp"), 100)
+    assertEquals(pikachu.getStats.get("fuerza"), 100)
+    assertEquals(pikachu.getStats.get("velocidad"), 10)
+    assertEquals(pikachu.getStats.get("inteligencia"), 10)
+    
+  }
+  
 }
