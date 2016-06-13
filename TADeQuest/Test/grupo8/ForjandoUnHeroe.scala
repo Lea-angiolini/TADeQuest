@@ -15,6 +15,7 @@ class ForjandoUnHeroe {
   var armaduraElegante: Armadura = null
   var arcoViejo: ArmaDeDosManos = null
   var escudoAntiRobo: Escudo = null
+  var talismanDedicacion: Talisman = null
   
   @Before
   def setup = {
@@ -30,7 +31,10 @@ class ForjandoUnHeroe {
                      x => x.getTrabajo.getDescripcion == "Mago" || (x.getTrabajo.getDescripcion == "Ladron" && x.getStatBase.get("inteligencia") > 30))
    armaduraElegante = new Armadura("Armadura Elegante-Sport", x => new Stats(-30,0,30,0), x => true)
    arcoViejo = new ArmaDeDosManos("Arco Viejo", x => new Stats(0,20,0,0), x => true)
-   escudoAntiRobo = new Escudo("Escudo Anti-Robo", x => new Stats(20,0,0,0), x => x.getTrabajo.getDescripcion == "Ladron" && x.getStatBase.get("fuerza") >= 20) 
+   escudoAntiRobo = new Escudo("Escudo Anti-Robo", x => new Stats(20,0,0,0), x => x.getTrabajo.getDescripcion == "Ladron" && x.getStatBase.get("fuerza") >= 20)
+   talismanDedicacion = new Talisman("Talismán de Dedicacion", 
+                         {x => val valor: Int = (x.getTrabajo.getValorStatPrincipal *1.1).toInt
+                           new Stats(valor,valor,valor,valor)}, x => true)
   }
   
   @Test
