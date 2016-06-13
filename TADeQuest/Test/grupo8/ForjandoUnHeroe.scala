@@ -54,6 +54,15 @@ class ForjandoUnHeroe {
                                  x => x.trabajo == null )
   }
   
+  def compararStats(s1: Stats, s2: Stats):Boolean = {
+   for(a <- s1.getStats;
+       b <- s2.getStats;
+       if(a._1 == b._1))
+   {if(!(a._2 == b._2))
+     return false}
+   true
+  }
+  
   @Test
   def test_usarSombreroVikingo() = {
     ashe.equipar(cascoVikingo)
@@ -84,6 +93,7 @@ class ForjandoUnHeroe {
   
   @Test
   def usaArmaduraElegante() = {
+    ashe.equipar(armaduraElegante)
     
   }
   
