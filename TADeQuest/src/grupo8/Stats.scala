@@ -1,10 +1,14 @@
 package grupo8
 
-class Stats(hp: Int,fuerza: Int, velocidad: Int, inteligencia: Int) {
+class Stats(hp: Int = 0,fuerza: Int = 0, velocidad: Int = 0, inteligencia: Int = 0) extends ModificadorDeStat{
   var mapStats: collection.mutable.Map[String,Int] = collection.mutable.Map("hp"-> hp, "fuerza"->fuerza, "velocidad"->velocidad, "inteligencia"->inteligencia)
   
   def getStats = {
     mapStats
+  }
+  
+  def getStat(heroe: Heroe) = {
+    List(this)
   }
   
   def get(nombre:String) = {
@@ -26,4 +30,15 @@ class Stats(hp: Int,fuerza: Int, velocidad: Int, inteligencia: Int) {
     
     this
   }
+  
+  def limite(min: Int = 1){
+    for(m <- mapStats){
+      if(m._2 < min)
+        mapStats(m._1) = min
+    }
+  }
+}
+
+abstract class ModificadorDeStat {
+  def getStat(heroe: Heroe): List[Stats] 
 }

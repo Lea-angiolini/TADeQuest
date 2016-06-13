@@ -2,7 +2,7 @@ package grupo8
 
 import scala.collection.mutable
 
-class Inventario {
+class Inventario extends ModificadorDeStat {
   
   val items:mutable.Map[String,Item] = mutable.Map()
   val talismanes: collection.mutable.Set[Talisman] = collection.mutable.Set[Talisman]()
@@ -17,7 +17,7 @@ class Inventario {
       }
   }
   
-  def equipar[U <: Item](item: U) {
+  def equipar[U <: Item](item: U): Inventario = {
     
     item match {
       case s @ Sombrero(des,cal,acep) => this.items("sombrero") = s
@@ -32,14 +32,16 @@ class Inventario {
       
       case t @ Talisman(des,cal,acep) => this.talismanes.add(t)
     }  
+    this
   }
   
-  def calcularStat(heroe: Heroe):Stats = {
-    var stat = new Stats(0,0,0,0)
+  def getStat(heroe: Heroe):List[Stats] = {
+    //var stat = new Stats(0,0,0,0)
     
-    items.foreach(f => (stat += f._2.calcularStatpara(heroe)))
+    items.map(_._2.calcularStatpara(heroe)).toList.++(talismanes.map(_.calcularStatpara(heroe)))
+    /*items.foreach(f => (stat += f._2.calcularStatpara(heroe)))
     talismanes.foreach(f => (stat += f.calcularStatpara(heroe)))
-    stat
+    stat*/
   }
   
   def calcularElementospermitidos(heroe: Heroe) {

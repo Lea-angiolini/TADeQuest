@@ -1,8 +1,8 @@
 package grupo8
 
-class Trabajo(descripcion: String, statBase: Stats, statPrincipal: String) {
+class Trabajo(descripcion: String, statBase: Stats, statPrincipal: String) extends ModificadorDeStat{
   
-  def getStats: Stats = statBase
+  def getStat(heroe: Heroe): List[Stats] = List(statBase)
   
   def getStatPrincipal: String = statPrincipal
   

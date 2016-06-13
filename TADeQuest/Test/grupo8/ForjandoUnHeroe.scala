@@ -39,7 +39,7 @@ class ForjandoUnHeroe {
                            new Stats(valor,valor,valor,valor)}, x => true)
    
    talismanDelMinimalismo = new Talisman("Talisman del minimalismo", 
-                         {x => val cantItems: Int = (x.inventario.items.size) 
+                         {x => val cantItems: Int = (x.getInventario.items.size) 
                            
                            new Stats(50-(10*cantItems),0,0,0)
                          
@@ -51,7 +51,7 @@ class ForjandoUnHeroe {
                                     new Stats(0,0,0,30)
                                  else
                                    new Stats(10,10,10,0),
-                                 x => x.trabajo.getDescripcion == "Sin trabajo" )
+                                 x => x.getTrabajo.getDescripcion == "Sin trabajo" )
   }
   
   def compararStats(s1: Stats, s2: Stats):Boolean = {
@@ -65,7 +65,15 @@ class ForjandoUnHeroe {
      println("")
      estado = false}
    }
+   if(!estado) println("-------------------------------------------------")
    estado
+  }
+  
+  @Test
+  def statMayoresA1() = {
+    var burro = new Heroe(new Stats(100,100,40,0))
+    burro.setTrabajo(new Guerrero)
+    assertTrue(compararStats(burro.getStats, new Stats(110,115,40,1)))  
   }
   
   @Test
@@ -88,9 +96,9 @@ class ForjandoUnHeroe {
     ashe.equipar(palitoMagico)
     assertEquals(120, ashe.getStats.get("inteligencia"))
     
-    assertEquals(0, coco.getStats.get("inteligencia"))
+    assertEquals(1, coco.getStats.get("inteligencia"))
     coco.equipar(palitoMagico)
-    assertEquals(0, coco.getStats.get("inteligencia"))
+    assertEquals(1, coco.getStats.get("inteligencia"))
     
     pepe.equipar(palitoMagico)
     assertEquals(15, pepe.getStats.get("inteligencia"))
@@ -107,7 +115,7 @@ class ForjandoUnHeroe {
   @Test
   def usaArcoViejo() = {
     coco.equipar(arcoViejo)
-    assertTrue(compararStats(coco.getStats, new Stats(110,117,10,0)))
+    assertTrue(compararStats(coco.getStats, new Stats(110,117,10,1)))
     coco.descartarTrabajo
     assertTrue(compararStats(coco.getStats, new Stats(100,102,10,10)))
    
@@ -115,7 +123,8 @@ class ForjandoUnHeroe {
   
   @Test
   def usaEscudoAntiRobo() = {
-    
+    /*var a =  new Stats(hp= 4, inteligencia=4)
+  println(a.getStats)*/
   }
   
   @Test

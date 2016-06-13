@@ -32,7 +32,7 @@ class HeroesTrabajan {
     assertEquals(pikachu.getStats.get("hp"), 110)
     assertEquals(pikachu.getStats.get("fuerza"), 115)
     assertEquals(pikachu.getStats.get("velocidad"), 10)
-    assertEquals(pikachu.getStats.get("inteligencia"), 0)
+    assertEquals(pikachu.getStats.get("inteligencia"), 1)
     
   }
   
