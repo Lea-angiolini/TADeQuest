@@ -55,12 +55,17 @@ class ForjandoUnHeroe {
   }
   
   def compararStats(s1: Stats, s2: Stats):Boolean = {
+    var estado: Boolean = true
    for(a <- s1.getStats;
        b <- s2.getStats;
        if(a._1 == b._1))
-   {if(!(a._2 == b._2))
-     return false}
-   true
+   {if(!(a._2 == b._2)){
+     println(a._1 + " del primero es: " + a._2)
+     println(b._1 + " del segundo es: " + b._2)
+     println("")
+     estado = false}
+   }
+   estado
   }
   
   @Test
@@ -94,7 +99,9 @@ class ForjandoUnHeroe {
   @Test
   def usaArmaduraElegante() = {
     ashe.equipar(armaduraElegante)
-    
+    assertTrue(compararStats(ashe.getStats, new Stats(70,10,70,80)))
+    ashe.descartarTrabajo
+    assertTrue(compararStats(ashe.getStats, new Stats(70,30,70,60)))
   }
   
   @Test
