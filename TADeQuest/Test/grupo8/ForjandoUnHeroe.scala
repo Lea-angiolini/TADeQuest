@@ -32,7 +32,7 @@ class ForjandoUnHeroe {
    palitoMagico = new ArmaDeUnaMano("Palito Mágico", x => new Stats(0,0,0,20), 
                      x => x.getTrabajo.getDescripcion == "Mago" || (x.getTrabajo.getDescripcion == "Ladron" && x.getStatBase.get("inteligencia") > 30))
    armaduraElegante = new Armadura("Armadura Elegante-Sport", x => new Stats(-30,0,30,0), x => true)
-   arcoViejo = new ArmaDeDosManos("Arco Viejo", x => new Stats(0,20,0,0), x => true)
+   arcoViejo = new ArmaDeDosManos("Arco Viejo", x => new Stats(0,2,0,0), x => true)
    escudoAntiRobo = new Escudo("Escudo Anti-Robo", x => new Stats(20,0,0,0), x => x.getTrabajo.getDescripcion == "Ladron" && x.getStatBase.get("fuerza") >= 20)
    talismanDedicacion = new Talisman("Talismán de Dedicacion", 
                          {x => val valor: Int = (x.getTrabajo.getValorStatPrincipal *1.1).toInt
@@ -106,7 +106,11 @@ class ForjandoUnHeroe {
   
   @Test
   def usaArcoViejo() = {
-    
+    coco.equipar(arcoViejo)
+    assertTrue(compararStats(coco.getStats, new Stats(110,117,10,0)))
+    coco.descartarTrabajo
+    assertTrue(compararStats(coco.getStats, new Stats(100,102,10,10)))
+   
   }
   
   @Test
@@ -128,5 +132,4 @@ class ForjandoUnHeroe {
   def usaVinchaDeBufaloDeAgua = {
     
   }
-  
 }

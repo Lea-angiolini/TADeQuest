@@ -8,7 +8,8 @@ class Inventario {
   val talismanes: collection.mutable.Set[Talisman] = collection.mutable.Set[Talisman]()
   
   private def itemAMano[T <: ItemDeUnaMano](item: T){
-    if (!this.items.contains("manoIzq")) {
+    this.items.remove("mano")
+    if (this.items.contains("manoDer")) {
         this.items("manoIzq") = item.asInstanceOf[ItemDeUnaMano]
       } else {
         
@@ -26,8 +27,8 @@ class Inventario {
       case e @ Escudo(des,cal,acep) => this.itemAMano(e)
 
       case a @ ArmaDeDosManos(des,cal,acep) =>
-        this.items("manoDer") = a
-        this.items("manoIzq") = this.items("manoDer")
+        this.items.remove("manoDer"); this.items.remove("manoIzq")
+        this.items("mano") = a
       
       case t @ Talisman(des,cal,acep) => this.talismanes.add(t)
     }  
