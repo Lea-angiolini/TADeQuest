@@ -38,7 +38,7 @@ class Inventario {
     var stat = new Stats(0,0,0,0)
     
     items.foreach(f => (stat += f._2.calcularStatpara(heroe)))
-    
+    talismanes.foreach(f => (stat += f.calcularStatpara(heroe)))
     stat
   }
   

@@ -35,13 +35,13 @@ class ForjandoUnHeroe {
    arcoViejo = new ArmaDeDosManos("Arco Viejo", x => new Stats(0,2,0,0), x => true)
    escudoAntiRobo = new Escudo("Escudo Anti-Robo", x => new Stats(20,0,0,0), x => x.getTrabajo.getDescripcion == "Ladron" && x.getStatBase.get("fuerza") >= 20)
    talismanDedicacion = new Talisman("Talismán de Dedicacion", 
-                         {x => val valor: Int = (x.getTrabajo.getValorStatPrincipal *1.1).toInt
+                         {x => val valor: Int = (x.getTrabajo.getValorStatPrincipal * 0.1).toInt
                            new Stats(valor,valor,valor,valor)}, x => true)
    
    talismanDelMinimalismo = new Talisman("Talisman del minimalismo", 
                          {x => val cantItems: Int = (x.inventario.items.size) 
                            
-                           new Stats(50,-10*cantItems,0,0)
+                           new Stats(50-(10*cantItems),0,0,0)
                          
                          },x => true)
    vinchaDelBuffaloDeAgua = new Sombrero("vincha Del Buffalo De Agua",
@@ -51,7 +51,7 @@ class ForjandoUnHeroe {
                                     new Stats(0,0,0,30)
                                  else
                                    new Stats(10,10,10,0),
-                                 x => x.trabajo == null )
+                                 x => x.trabajo.getDescripcion == "Sin trabajo" )
   }
   
   def compararStats(s1: Stats, s2: Stats):Boolean = {
@@ -120,15 +120,21 @@ class ForjandoUnHeroe {
   
   @Test
   def usaTalismanDeDedicacion() = {
+    ashe.equipar(talismanDedicacion)
+    assertTrue(compararStats(ashe.getStats, new Stats(102,12,42,82)))
+    ashe.descartarTrabajo
+    assertTrue(compararStats(ashe.getStats, new Stats(100,30,40,60)))
     
+    pepe.equipar(talismanDedicacion)
+    assertTrue(compararStats(pepe.getStats, new Stats(96,32,31,16)))
+       
   }
   
   @Test
   def usaTalismanDelMinimalismo() = {
     ashe.descartarTrabajo
     ashe.equipar(talismanDelMinimalismo)
-    
-    assertTrue(compararStats(ashe.getStats, new Stats(150,20,40,60)))
+    assertTrue(compararStats(ashe.getStats, new Stats(150,30,40,60)))
   }
   
   @Test
