@@ -41,7 +41,7 @@ class ForjandoUnHeroe {
    talismanDelMinimalismo = new Talisman("Talisman del minimalismo", 
                          {x => val cantItems: Int = (x.inventario.items.size) 
                            
-                           new Stats(50,-10*cantItems,-10*cantItems,-10*cantItems)
+                           new Stats(50,-10*cantItems,0,0)
                          
                          },x => true)
    vinchaDelBuffaloDeAgua = new Sombrero("vincha Del Buffalo De Agua",
@@ -125,11 +125,23 @@ class ForjandoUnHeroe {
   
   @Test
   def usaTalismanDelMinimalismo() = {
+    ashe.descartarTrabajo
+    ashe.equipar(talismanDelMinimalismo)
     
+    assertTrue(compararStats(ashe.getStats, new Stats(150,20,40,60)))
   }
   
   @Test
   def usaVinchaDeBufaloDeAgua = {
+    ashe.descartarTrabajo
+    ashe.equipar(vinchaDelBuffaloDeAgua)
     
+    assertTrue(compararStats(ashe.getStats, new Stats(110,40,50,60)))
+    
+    
+    coco.descartarTrabajo
+    coco.equipar(vinchaDelBuffaloDeAgua)
+    
+    assertTrue(compararStats(coco.getStats,new Stats(100,100,10,40)))
   }
 }
