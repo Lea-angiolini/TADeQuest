@@ -16,6 +16,8 @@ class ForjandoUnHeroe {
   var arcoViejo: ArmaDeDosManos = null
   var escudoAntiRobo: Escudo = null
   var talismanDedicacion: Talisman = null
+  var talismanDelMinimalismo: Talisman = null
+  var vinchaDelBuffaloDeAgua: Sombrero = null
   
   @Before
   def setup = {
@@ -35,6 +37,21 @@ class ForjandoUnHeroe {
    talismanDedicacion = new Talisman("Talismán de Dedicacion", 
                          {x => val valor: Int = (x.getTrabajo.getValorStatPrincipal *1.1).toInt
                            new Stats(valor,valor,valor,valor)}, x => true)
+   
+   talismanDelMinimalismo = new Talisman("Talisman del minimalismo", 
+                         {x => val cantItems: Int = (x.inventario.items.size) 
+                           
+                           new Stats(50,-10*cantItems,-10*cantItems,-10*cantItems)
+                         
+                         },x => true)
+   vinchaDelBuffaloDeAgua = new Sombrero("vincha Del Buffalo De Agua",
+                               
+                               x=>
+                                 if(x.getStatBase.get("fuerza") > x.getStatBase.get("inteligencia"))
+                                    new Stats(0,0,0,30)
+                                 else
+                                   new Stats(10,10,10,0),
+                                 x => x.trabajo == null )
   }
   
   @Test
@@ -65,5 +82,34 @@ class ForjandoUnHeroe {
     assertEquals(15, pepe.getStats.get("inteligencia"))
   }
   
+  @Test
+  def usaArmaduraElegante() = {
+    
+  }
+  
+  @Test
+  def usaArcoViejo() = {
+    
+  }
+  
+  @Test
+  def usaEscudoAntiRobo() = {
+    
+  }
+  
+  @Test
+  def usaTalismanDeDedicacion() = {
+    
+  }
+  
+  @Test
+  def usaTalismanDelMinimalismo() = {
+    
+  }
+  
+  @Test
+  def usaVinchaDeBufaloDeAgua = {
+    
+  }
   
 }
