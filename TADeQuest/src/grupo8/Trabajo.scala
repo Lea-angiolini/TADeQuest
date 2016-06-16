@@ -5,9 +5,9 @@ case class Trabajo(descripcion: String, statBase: Stats, statPrincipal: String) 
   type A = Trabajo
   override def copiar = copy(statBase = statBase.copiar)
   
-  def getStat(heroe: Heroe): List[Stats] = List(statBase)
+  def getStat(heroe: Heroe): Set[StatsStandard] = Set(statBase)
   
-  def getStatPrincipal: String = statPrincipal
+  def getStatPrincipal: Option[String] = Some(statPrincipal)
   
   def getDescripcion: String = descripcion
   
@@ -21,6 +21,6 @@ class Mago extends Trabajo("Mago", new Stats(0,-20,0,20),"inteligencia")
 class Ladron extends Trabajo("Ladrón", new Stats(-5,0,10,0),"velocidad")
 
 class SinTrabajo extends Trabajo("Sin trabajo", new Stats(0,0,0,0),""){
-  override def getStatPrincipal: String = ""
+  override def getStatPrincipal: Option[String] = None
   override def getValorStatPrincipal: Int = 0
   }

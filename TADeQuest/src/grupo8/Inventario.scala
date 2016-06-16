@@ -39,11 +39,13 @@ case class Inventario(items:mutable.Map[String,Item] = mutable.Map(), talismanes
     this
   }
   
-  def getStat(heroe: Heroe):List[Stats] = {   
-    items.map(_._2.calcularStatpara(heroe)).toList.++(talismanes.map(_.calcularStatpara(heroe)))
+  def getStat(heroe: Heroe):Set[StatsStandard] = {   
+    (items.map(_._2.calcularStatpara(heroe)).toSet.++(talismanes.map(_.calcularStatpara(heroe)))) + new Stats
   }
   
   def calcularElementospermitidos(heroe: Heroe) {
     for (i <- items; if (!i._2.puedeUsar(heroe))) {items.remove(i._1)}
   }
+  
+  def getTalismanes = talismanes
 }

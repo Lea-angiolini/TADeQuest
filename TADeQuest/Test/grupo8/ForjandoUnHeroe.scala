@@ -18,6 +18,7 @@ class ForjandoUnHeroe {
   var talismanDedicacion: Talisman = null
   var talismanDelMinimalismo: Talisman = null
   var vinchaDelBuffaloDeAgua: Sombrero = null
+  var talismanMaldito: Talisman = null
   
   @Before
   def setup = {
@@ -52,9 +53,11 @@ class ForjandoUnHeroe {
                                  else
                                    new Stats(10,10,10,0),
                                  x => x.getTrabajo.getDescripcion == "Sin trabajo" )
+   
+   talismanMaldito = new Talisman("Talisman Maldito",(heroe) => StatsConAdhesion(1,1,1,1, (x,y) => y), (heroe) => true)
   }
   
-  def compararStats(s1: Stats, s2: Stats):Boolean = {
+  def compararStats(s1: StatsStandard, s2: StatsStandard):Boolean = {
     var estado: Boolean = true
    for(a <- s1.getStats;
        b <- s2.getStats;
@@ -160,5 +163,17 @@ class ForjandoUnHeroe {
     coco.equipar(vinchaDelBuffaloDeAgua)
     
     assertTrue(compararStats(coco.getStats,new Stats(100,100,10,40)))
+  }
+  
+  @Test
+  def usaTalismanMaldito = {
+    ashe.descartarTrabajo
+    ashe.equipar(palitoMagico)
+    ashe.equipar(talismanMaldito)
+    ashe.equipar(talismanDelMinimalismo)
+    //println(ashe.getInventario.getTalismanes)
+
+    
+    assertTrue(compararStats(ashe.getStats, new Stats(1,1,1,1)))
   }
 }

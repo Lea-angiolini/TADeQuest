@@ -1,17 +1,16 @@
 package grupo8
 
-case class Stats(hp: Int = 0,fuerza: Int = 0, velocidad: Int = 0, inteligencia: Int = 0) extends ModificadorDeStat{
-  var mapStats: Map[String,Int] = Map("hp"-> hp, "fuerza"->fuerza, "velocidad"->velocidad, "inteligencia"->inteligencia)
-  
-  type A = Stats
+abstract class StatsStandard(hp: Int ,fuerza: Int, velocidad: Int, inteligencia: Int) extends ModificadorDeStat{
+  var mapStats: Map[String,Int] = Map("hp"-> hp, "fuerza"->fuerza, "velocidad"->velocidad, "inteligencia"->inteligencia)  
+
+  type A = StatsStandard
   
   def getStats = {
     mapStats
   }
   
-  
   def getStat(heroe: Heroe) = {
-    List(this)
+    Set(this)
   }
   
   def get(nombre:String) = {
@@ -23,20 +22,18 @@ case class Stats(hp: Int = 0,fuerza: Int = 0, velocidad: Int = 0, inteligencia: 
       mapStats += (nombre -> value)
   }
   
-  def +(stat: Stats): Stats = {
-    val nuevoStat = new Stats
+  def +(stat: StatsStandard): StatsStandard = {
+    val nuevoStat: StatsStandard = stat.copiar
     for( n <- stat.getStats;
          m <- mapStats;
          if (m._1 == n._1) 
         )  
     {
-      nuevoStat.set(n._1,n._2+m._2) 
+      nuevoStat.set(n._1, n._2 + m._2) 
     }
-    
     nuevoStat
   }
   
-  override def copiar = copy()
   
   def limite(min: Int = 1) = {
     for(m <- mapStats){
@@ -47,6 +44,19 @@ case class Stats(hp: Int = 0,fuerza: Int = 0, velocidad: Int = 0, inteligencia: 
   }
 }
 
+case class Stats(hp: Int = 0,fuerza: Int = 0, velocidad: Int = 0, inteligencia: Int = 0) extends StatsStandard(hp,fuerza,velocidad,inteligencia){
+  override def copiar = copy()
+}
+
+case class StatsConAdhesion(hp: Int = 0,fuerza: Int = 0, velocidad: Int = 0, inteligencia: Int = 0, adhesion: (StatsStandard, StatsStandard) => StatsStandard) extends StatsStandard(hp,fuerza,velocidad,inteligencia){
+  override def copiar = copy()
+  
+  override def +(stat: StatsStandard): StatsStandard = {
+    println("f")
+    adhesion(this,stat)
+  }
+}
+
 abstract class ModificadorDeStat extends Copiable {
-  def getStat(heroe: Heroe): List[Stats] 
+  def getStat(heroe: Heroe): Set[StatsStandard] 
 }
