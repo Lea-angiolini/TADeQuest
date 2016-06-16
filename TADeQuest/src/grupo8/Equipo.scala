@@ -25,11 +25,25 @@ case class Equipo(nombre: String, var heroes: List[Heroe] = List()) extends Copi
   def vender(item: Item) {
     //pozoComun_+=(item.valor)
   }
+  
   def ObtenerItem(item: Item){
     val mejorHeroe = mejorHeroeSegun { heroe => heroe.copiar.equipar(item).getStatPrincipal - heroe.getStatPrincipal }
     mejorHeroe match {
       case Some(x) if x._2 > 0 => x._1.equipar(item)
       case _ => vender(item)
     }
+  }
+  
+  def obtenerMiembro(heroe: Heroe){
+    this.heroes = this.getHeroes ::: List(heroe)
+  }
+  
+  def reemplazarMiembro(miembroNuevo: Heroe, miembroViejo: Heroe){
+    this.heroes = this.getHeroes.filter(_ != miembroViejo)
+    this.obtenerMiembro(miembroNuevo) 
+  }
+  
+  def lider():Option[(Heroe,Int)] = {
+    mejorHeroeSegun { heroe => heroe.getStatPrincipal }//TODO y si hay mas de uno?
   }
 }
