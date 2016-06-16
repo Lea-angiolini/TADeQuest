@@ -1,6 +1,9 @@
 package grupo8
 
-class Trabajo(descripcion: String, statBase: Stats, statPrincipal: String) extends ModificadorDeStat{
+case class Trabajo(descripcion: String, statBase: Stats, statPrincipal: String) extends ModificadorDeStat{
+  
+  type A = Trabajo
+  override def copiar = copy(statBase = statBase.copiar)
   
   def getStat(heroe: Heroe): List[Stats] = List(statBase)
   

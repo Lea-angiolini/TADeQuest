@@ -1,11 +1,11 @@
 package grupo8
 
-class Heroe(statBase: Stats) {
+case class Heroe(statBase: Stats, inventario: Inventario = new Inventario, var trabajo: Trabajo = new SinTrabajo) extends Copiable {
   
   var elementosConStat:Map[String,ModificadorDeStat]  = 
-    Map("statBase" -> statBase, "inventario" -> new Inventario, "trabajo" -> new SinTrabajo) //TODO Buscar un nombre mejor
+    Map("inventario" -> new Inventario, "trabajo" -> new SinTrabajo) //TODO Buscar un nombre mejor
   
-  var statActual: Stats = statBase
+  var statActual: Stats = statBase.limite()
   
   private def updateElementos(elemento: String, valor:ModificadorDeStat) {
     elementosConStat += (elemento -> valor)
@@ -21,16 +21,18 @@ class Heroe(statBase: Stats) {
     updateElementos("trabajo",new SinTrabajo)
   }
   
-  private def calcularStat {
-    this.statActual = elementosConStat.flatMap( _._2.getStat(this)).fold(new Stats)(_ + _)
+  private def calcularStat = {
+    this.statActual = elementosConStat.flatMap( _._2.getStat(this)).fold(statBase)(_ + _)
     this.statActual.limite()
   }
   
   def equipar[U <: Item](item: U){
     updateElementos("inventario",this.getInventario.equipar(item))
   }
+  override type A = Heroe
+  override def copiar = copy(statBase = getStatBase.copiar, inventario = inventario.copiar, trabajo = trabajo.copiar)
   
-  def getStatBase: Stats = this.elementosConStat("statBase").asInstanceOf[Stats]
+  def getStatBase: Stats = statBase
   
   def getStats: Stats = this.statActual
   

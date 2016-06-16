@@ -2,10 +2,14 @@ package grupo8
 
 import scala.collection.mutable
 
-class Inventario extends ModificadorDeStat {
+case class Inventario(items:mutable.Map[String,Item] = mutable.Map(), talismanes: collection.mutable.Set[Talisman] = collection.mutable.Set[Talisman]()) extends ModificadorDeStat {
   
-  val items:mutable.Map[String,Item] = mutable.Map()
-  val talismanes: collection.mutable.Set[Talisman] = collection.mutable.Set[Talisman]()
+  type A = Inventario
+  
+  override def copiar = copy(items.clone(), talismanes.clone())
+  
+  /*val items:mutable.Map[String,Item] = mutable.Map()
+  val talismanes: collection.mutable.Set[Talisman] = collection.mutable.Set[Talisman]()*/
   
   private def itemAMano[T <: ItemDeUnaMano](item: T){
     this.items.remove("mano")
@@ -35,13 +39,8 @@ class Inventario extends ModificadorDeStat {
     this
   }
   
-  def getStat(heroe: Heroe):List[Stats] = {
-    //var stat = new Stats(0,0,0,0)
-    
+  def getStat(heroe: Heroe):List[Stats] = {   
     items.map(_._2.calcularStatpara(heroe)).toList.++(talismanes.map(_.calcularStatpara(heroe)))
-    /*items.foreach(f => (stat += f._2.calcularStatpara(heroe)))
-    talismanes.foreach(f => (stat += f.calcularStatpara(heroe)))
-    stat*/
   }
   
   def calcularElementospermitidos(heroe: Heroe) {

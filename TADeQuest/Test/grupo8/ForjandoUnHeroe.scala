@@ -123,9 +123,11 @@ class ForjandoUnHeroe {
   
   @Test
   def usaEscudoAntiRobo() = {
-    /*var a =  new Stats(hp= 4, inteligencia=4)
-  println(a.getStats)*/
-  }
+   /* var a: List[Heroe] = List()//List(new Heroe(new Stats(hp = 8, fuerza=43)), new Heroe(new Stats(hp = 98)))
+    println("el heroe mas grande es: " + a.maxBy(_.getStatBase.get("hp")).getStatBase.get("fuerza"))
+  */
+   }
+  
   
   @Test
   def usaTalismanDeDedicacion() = {
