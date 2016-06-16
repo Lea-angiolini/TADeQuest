@@ -61,6 +61,16 @@ class HayEquipo {
   @Test
   def lider(){
     
+    ashe.setTrabajo(mago)
+    
+    equipo.obtenerMiembro(ashe)
+    equipo.obtenerMiembro(pikachu)
+    equipo.obtenerMiembro(iroito)
+    
+    assertTrue(equipo.lider() match{
+      case Some(x) if x._1 == ashe => true
+      case _ => false
+    })
   }
 
 }
