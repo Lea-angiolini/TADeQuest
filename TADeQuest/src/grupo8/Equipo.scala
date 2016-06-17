@@ -43,7 +43,24 @@ case class Equipo(nombre: String, var heroes: List[Heroe] = List()) extends Copi
     this.obtenerMiembro(miembroNuevo) 
   }
   
+  def mejorHeroeSegun2(cuantificador: (Heroe => Int)): Option[(Heroe, Int)] = {
+    //TODO mejorar esta shit D:!!!!
+    val a = (for(h <- heroes) yield {(h, cuantificador(h))})
+    val ilKapo = a.maxBy[Int](_._2)
+     
+    
+    val c = (for(h <- heroes if ilKapo._1 != h ) yield {(h, cuantificador(h))})
+    val otroKapo = c.maxBy[Int](_._2)
+     
+    if(ilKapo._2 == otroKapo._2){
+      return None
+    }else{
+      return Some(ilKapo)
+    }
+  }
+  
   def lider():Option[(Heroe,Int)] = {
-    mejorHeroeSegun { heroe => heroe.getStatPrincipal }//TODO y si hay mas de uno?
+    this.mejorHeroeSegun { heroe => heroe.getStatPrincipal }//TODO y si hay mas de uno?
+    //this.mejorHeroeSegun2 { heroe => heroe.getStatPrincipal }
   }
 }

@@ -29,7 +29,13 @@ class HayEquipo {
   
   @Test
   def mejorHeroeSegun(){
+    equipo.obtenerMiembro(ashe)
+    equipo.obtenerMiembro(pikachu)
     
+    assertTrue(equipo.mejorHeroeSegun { heroe => heroe.getStats.get("inteligencia") } match{
+      case Some(x) if x._1 == ashe => true
+      case _ => false
+    })
   }
   
   @Test
@@ -71,6 +77,17 @@ class HayEquipo {
       case Some(x) if x._1 == ashe => true
       case _ => false
     })
+    
+    //TODO No hay lider claro
+//    var soyIgualDeGrosaQueAshe = new Heroe(new Stats(100,30,40,60)) 
+//    soyIgualDeGrosaQueAshe.setTrabajo(mago)
+//    
+//    equipo.obtenerMiembro(soyIgualDeGrosaQueAshe)
+//    
+//    assertTrue(equipo.lider() match{
+//      case Some(x) => false
+//      case None => true
+//    })
   }
 
 }
