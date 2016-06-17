@@ -5,24 +5,9 @@ import org.junit.Test
 import org.junit.Assert._
 
 
-class HeroesTrabajan {
+class HeroesTrabajan extends TAdeQuestPrueba{
 
-  var ashe: Heroe = null
-  var pikachu: Heroe = null
-  var guerrero: Trabajo = null
-  var mago: Trabajo = null
-  var ladron: Trabajo = null
-  
-  @Before
-  def setup = {
-   ashe = new Heroe(new Stats(100,30,40,60)) 
-   pikachu = new Heroe(new Stats(100,100,10,10))//Stats(hp: Int,fuerza: Int, velocidad: Int, inteligencia: Int)
-   
-   //Trabajo(descripcion: String, statBase: Stats, statPrincipal: String)
-   guerrero = new Guerrero
-   mago = new Mago
-   ladron = new Ladron
-   }
+
   
   @Test
   def test_unTrabajoGuerreroModificaStats() = {
