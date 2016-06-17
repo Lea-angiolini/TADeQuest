@@ -32,10 +32,7 @@ class HayEquipo {
     equipo.obtenerMiembro(ashe)
     equipo.obtenerMiembro(pikachu)
     
-    assertTrue(equipo.mejorHeroeSegun { heroe => heroe.getStats.get("inteligencia") } match{
-      case Some(x) if x._1 == ashe => true
-      case _ => false
-    })
+    assertTrue(equipo.mejorHeroeSegun { heroe => heroe.getStats.get("inteligencia") }.contains(ashe))
   }
   
   @Test
@@ -74,20 +71,28 @@ class HayEquipo {
     equipo.obtenerMiembro(iroito)
     
     assertTrue(equipo.lider() match{
-      case Some(x) if x._1 == ashe => true
+      case Some(x) if x == ashe => true
       case _ => false
     })
     
     //TODO No hay lider claro
-//    var soyIgualDeGrosaQueAshe = new Heroe(new Stats(100,30,40,60)) 
-//    soyIgualDeGrosaQueAshe.setTrabajo(mago)
-//    
-//    equipo.obtenerMiembro(soyIgualDeGrosaQueAshe)
-//    
-//    assertTrue(equipo.lider() match{
-//      case Some(x) => false
-//      case None => true
-//    })
+    var soyIgualDeGrosaQueAshe = new Heroe(new Stats(100,30,40,60)) 
+    soyIgualDeGrosaQueAshe.setTrabajo(mago)
+    
+    equipo.obtenerMiembro(soyIgualDeGrosaQueAshe)
+    
+    assertTrue(equipo.lider() match{
+      case Some(x) => false
+      case None => true
+    })
+    
+    var equipo2 = new Equipo("")
+    
+        
+    assertTrue(equipo2.lider() match{
+      case Some(x) => false
+      case None => true
+    })
   }
 
 }
