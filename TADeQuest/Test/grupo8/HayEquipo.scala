@@ -3,6 +3,9 @@ package grupo8
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert._
+import scala.util._
+import com.sun.net.httpserver.Authenticator.Success
+import java.util.NoSuchElementException
 
 class HayEquipo {
   
@@ -32,7 +35,7 @@ class HayEquipo {
     equipo.obtenerMiembro(ashe)
     equipo.obtenerMiembro(pikachu)
     
-    assertTrue(equipo.mejorHeroeSegun { heroe => heroe.getStats.get("inteligencia") }.contains(ashe))
+    assertTrue(equipo.mejoresHeroesSegun { heroe => heroe.getStats.get("inteligencia") }.contains(ashe))
   }
   
   @Test
@@ -93,6 +96,22 @@ class HayEquipo {
       case Some(x) => false
       case None => true
     })
+    
+  }
+  
+  @Test
+  def hacerMisiones = {
+    equipo.obtenerMiembro(ashe)
+    equipo.obtenerMiembro(pikachu)
+    equipo.obtenerMiembro(iroito)
+    //println(ashe.getStats.get("inteligencia"))
+    
+    var mision = new Mision(Set(new pelearContraMonstruo))
+   // println(equipo.heroes)
+    equipo.realizarMision(mision)
+    //println(equipo.heroes)
+    
+        
   }
 
 }
