@@ -39,8 +39,10 @@ case class Inventario(items:mutable.Map[String,Item] = mutable.Map(), talismanes
     this
   }
   
-  def getStat(heroe: Heroe):Set[StatsStandard] = {   
-    (items.map(_._2.calcularStatpara(heroe)).toSet.++(talismanes.map(_.calcularStatpara(heroe)))) + new Stats
+  def getStat(heroe: Heroe):Set[Stats] = {   
+    val i = (for(i <- items) yield (i._2.calcularStatpara(heroe))).toSet 
+    val t = (for(t <- talismanes) yield (t.calcularStatpara(heroe)))
+    i.++(t)
   }
   
   def calcularElementospermitidos(heroe: Heroe) {

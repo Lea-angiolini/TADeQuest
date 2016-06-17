@@ -5,7 +5,7 @@ case class Trabajo(descripcion: String, statBase: Stats, statPrincipal: String) 
   type A = Trabajo
   override def copiar = copy(statBase = statBase.copiar)
   
-  def getStat(heroe: Heroe): Set[StatsStandard] = Set(statBase)
+  def getStat(heroe: Heroe): Set[Stats] = Set(statBase)
   
   def getStatPrincipal: Option[String] = Some(statPrincipal)
   

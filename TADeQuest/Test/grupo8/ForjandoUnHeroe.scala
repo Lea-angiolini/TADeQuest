@@ -3,6 +3,7 @@ package grupo8
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert._
+import scala.language.experimental.macros
 
 class ForjandoUnHeroe {
   
@@ -54,10 +55,12 @@ class ForjandoUnHeroe {
                                    new Stats(10,10,10,0),
                                  x => x.getTrabajo.getDescripcion == "Sin trabajo" )
    
-   talismanMaldito = new Talisman("Talisman Maldito",(heroe) => StatsConAdhesion(1,1,1,1, (x,y) => y), (heroe) => true)
+   var stat = Stats(1,1,1,1)
+   stat setRestriccion { x => for (s <- x.getStats) {x.set(s._1, 1); println(x.get(s._1)) }}
+   talismanMaldito = new Talisman("Talisman Maldito",(heroe) => stat, (heroe) => true)
   }
-  
-  def compararStats(s1: StatsStandard, s2: StatsStandard):Boolean = {
+   
+  def compararStats(s1: Stats, s2: Stats):Boolean = {
     var estado: Boolean = true
    for(a <- s1.getStats;
        b <- s2.getStats;
@@ -95,9 +98,9 @@ class ForjandoUnHeroe {
     ashe.equipar(palitoMagico)
     assertEquals(100, ashe.getStats.get("inteligencia"))
     ashe.equipar(palitoMagico)
-    assertEquals(120, ashe.getStats.get("inteligencia"))
+    assertEquals(100, ashe.getStats.get("inteligencia"))
     ashe.equipar(palitoMagico)
-    assertEquals(120, ashe.getStats.get("inteligencia"))
+    assertEquals(100, ashe.getStats.get("inteligencia"))
     
     assertEquals(1, coco.getStats.get("inteligencia"))
     coco.equipar(palitoMagico)
@@ -171,8 +174,6 @@ class ForjandoUnHeroe {
     ashe.equipar(palitoMagico)
     ashe.equipar(talismanMaldito)
     ashe.equipar(talismanDelMinimalismo)
-    //println(ashe.getInventario.getTalismanes)
-
     
     assertTrue(compararStats(ashe.getStats, new Stats(1,1,1,1)))
   }

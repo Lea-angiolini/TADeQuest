@@ -1,9 +1,12 @@
 package grupo8
 
-abstract class StatsStandard(hp: Int ,fuerza: Int, velocidad: Int, inteligencia: Int) extends ModificadorDeStat{
+case class Stats(hp: Int = 0,fuerza: Int = 0, velocidad: Int = 0, inteligencia: Int = 0,  var restricciones: List[Stats => Unit] = List()) extends ModificadorDeStat{
   var mapStats: Map[String,Int] = Map("hp"-> hp, "fuerza"->fuerza, "velocidad"->velocidad, "inteligencia"->inteligencia)  
-
-  type A = StatsStandard
+  
+  type Restriccion = Stats => Unit
+  type A = Stats
+  
+  override def copiar: Stats = copy(get("hp"),get("fuerza"),get("velocidad"),get("inteligencia"),restricciones)
   
   def getStats = {
     mapStats
@@ -22,41 +25,29 @@ abstract class StatsStandard(hp: Int ,fuerza: Int, velocidad: Int, inteligencia:
       mapStats += (nombre -> value)
   }
   
-  def +(stat: StatsStandard): StatsStandard = {
-    val nuevoStat: StatsStandard = stat.copiar
+  def setRestriccion(res: Restriccion){
+    restricciones = restricciones ::: (List(res))
+  }
+  
+  def getRestricciones: List[Restriccion] = restricciones
+  
+  def getStatsFinales: Stats = {
+    var statCopia = copiar
+    for(r <- restricciones) r(statCopia)
+    statCopia
+  }
+  
+  def +(stat: Stats): Stats = {
+    val nuevoStat: Stats = stat.copiar
     for( n <- stat.getStats;
          m <- mapStats;
          if (m._1 == n._1) 
-        )  
-    {
-      nuevoStat.set(n._1, n._2 + m._2) 
-    }
+        ) nuevoStat.set(n._1, n._2 + m._2) 
+    for(r <- restricciones) nuevoStat.setRestriccion(r)
     nuevoStat
-  }
-  
-  
-  def limite(min: Int = 1) = {
-    for(m <- mapStats){
-      if(m._2 < min)
-        set(m._1, min)
-    }
-    this
-  }
-}
-
-case class Stats(hp: Int = 0,fuerza: Int = 0, velocidad: Int = 0, inteligencia: Int = 0) extends StatsStandard(hp,fuerza,velocidad,inteligencia){
-  override def copiar = copy()
-}
-
-case class StatsConAdhesion(hp: Int = 0,fuerza: Int = 0, velocidad: Int = 0, inteligencia: Int = 0, adhesion: (StatsStandard, StatsStandard) => StatsStandard) extends StatsStandard(hp,fuerza,velocidad,inteligencia){
-  override def copiar = copy()
-  
-  override def +(stat: StatsStandard): StatsStandard = {
-    println("f")
-    adhesion(this,stat)
   }
 }
 
 abstract class ModificadorDeStat extends Copiable {
-  def getStat(heroe: Heroe): Set[StatsStandard] 
+  def getStat(heroe: Heroe): Set[Stats] 
 }

@@ -17,6 +17,8 @@ class ObjetosCopiables {
     borrar.setup
     heroe.equipar(borrar.armaduraElegante)
     
+    assertTrue(borrar.compararStats(new Stats(2,2,2,10).getStatsFinales,new Stats(1,1,1,0) + new Stats(0,0,0,1) + new Stats(1,1,1,9)))
     assertFalse(borrar.compararStats(heroe.statActual, heroeCopiar.statActual))
+    assertTrue(borrar.compararStats(heroe.statActual, new Stats(1,25,40,1)))
     }
   }
