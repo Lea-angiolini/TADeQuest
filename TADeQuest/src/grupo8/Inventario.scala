@@ -6,7 +6,7 @@ case class Inventario(items:mutable.Map[String,Item] = mutable.Map(), talismanes
   
   type A = Inventario
   
-  override def copiar = copy(items.clone(), talismanes.clone())
+  override def copiar = copy(mutable.Map() ++ items , mutable.Set() ++ talismanes)
   
   /*val items:mutable.Map[String,Item] = mutable.Map()
   val talismanes: collection.mutable.Set[Talisman] = collection.mutable.Set[Talisman]()*/

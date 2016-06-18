@@ -120,4 +120,15 @@ class ForjandoUnHeroe extends TAdeQuestPrueba{
     coco.equipar(talismanMaldito)
     assertTrue(compararStats(coco.getStats, new Stats(1,1,1,1)))
   }
+  
+  @Test
+  def asd = {
+    var equipo = new Equipo("los patos", List(ashe,coco))
+    var mision = new Mision(Set(new pelearContraMonstruo), equipo => equipo.obtenerMiembro(pepe))
+    
+    equipo.realizarMision(mision)
+    println(ashe.getTrabajo)
+    ashe.setTrabajo(new Ladron)
+    println(ashe)
+  }
 }

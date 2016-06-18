@@ -2,15 +2,22 @@ package grupo8
 
 import scala.util._
 
-class Mision(tareas: Set[Tarea]) {
+case class Mision(tareas: Set[Tarea], ganancias: Equipo => Unit) extends Copiable{
   
+  type A = Mision
   def getTareas = tareas
+  
+  override def copiar = copy(tareas,ganancias)
+  
+  def darGanancias(equipo: Equipo) = ganancias(equipo)
 }
 
 
-abstract class Tarea(facilidad: (Equipo,Heroe) => Option[Int], cambios: Heroe => Unit){
+abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[Int], cambios: Heroe => Unit){
 
   def getFacilidad = facilidad
+  
+  def getDescripcion = descripcion
   
   def puedeRealizarla(equipo: Equipo, heroe: Heroe): Boolean = {
     facilidad(equipo, heroe) match {
@@ -23,12 +30,12 @@ abstract class Tarea(facilidad: (Equipo,Heroe) => Option[Int], cambios: Heroe =>
     facilidad(equipo, heroe)
   }
   
-  def realizarla(heroe: Heroe) {println(heroe.getStatBase);cambios(heroe);heroe.getStatBase.set("hp", 9838483);println(heroe.getStatBase)}
+  def realizarla(heroe: Heroe) = cambios(heroe)
   
 }
 
-class pelearContraMonstruo() extends Tarea({(e,h) => e.lider() match {
+class pelearContraMonstruo() extends Tarea("Pelear contra Monstruo", {(e,h) => e.lider() match {
                                                                       case Some(h) if(h.getTrabajo.descripcion == "Guerrero") => Some(20)
                                                                       case _ => Some(10)
                                                                       }} , 
-                                            {(x) => println(x.getStatBase.get("hp")); x.getStatBase.set("hp", x.getStatBase.get("hp") - 1); println(x.getStatBase.get("hp"))})
+                                            {(x) => x.getStatBase.set("hp", x.getStatBase.get("hp") - 25)})

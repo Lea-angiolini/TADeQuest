@@ -7,18 +7,19 @@ import scala.util._
 import com.sun.net.httpserver.Authenticator.Success
 import java.util.NoSuchElementException
 
-class HayEquipo {
+class HayEquipo extends TAdeQuestPrueba{
   
-  var ashe: Heroe = null
-  var pikachu: Heroe = null
+  // var ashe: Heroe = null
+  //var pikachu: Heroe = null
   var iroito: Heroe = null
-  var guerrero: Trabajo = null
-  var mago: Trabajo = null
-  var ladron: Trabajo = null
+  //var guerrero: Trabajo = null
+  //var mago: Trabajo = null
+  //var ladron: Trabajo = null
   var equipo: Equipo = null
   
   @Before
-  def setup = {
+  override def setup = {
+    super.setup
    ashe = new Heroe(new Stats(100,30,40,60)) 
    pikachu = new Heroe(new Stats(100,100,10,10))
    iroito = new Heroe(new Stats(100,100,100,1))
@@ -27,6 +28,7 @@ class HayEquipo {
    mago = new Mago
    ladron = new Ladron
    
+   pikachu.setTrabajo(ladron)
    equipo = new Equipo("equipo charlie")
    }
   
@@ -100,18 +102,25 @@ class HayEquipo {
   }
   
   @Test
-  def hacerMisiones = {
+  def hacerMisiones  {
     equipo.obtenerMiembro(ashe)
-    equipo.obtenerMiembro(pikachu)
+    //equipo.obtenerMiembro(pikachu)
     equipo.obtenerMiembro(iroito)
-    //println(ashe.getStats.get("inteligencia"))
+    //var mision = new Mision(Set(new pelearContraMonstruo), equipo => equipo.ObtenerItem(armaduraElegante))
+    //equipo.realizarMision(mision)
+    ashe.setTrabajo(new Mago)
+    pikachu.setTrabajo(new Ladron)
+    iroito.setTrabajo(new Ladron)
+    //ashe.equipar(palitoMagico)
     
-    var mision = new Mision(Set(new pelearContraMonstruo))
-   // println(equipo.heroes)
-    equipo.realizarMision(mision)
-    //println(equipo.heroes)
-    
-        
+    equipo.ObtenerItem(armaduraElegante)
+//    println(ashe.getStats)
+//    println(ashe.getInventario.items)
+//    println(pikachu.getStats)
+//    println(pikachu.getTrabajo.descripcion)
+//    println(pikachu.getInventario.items)
+//    println(iroito.getStats)
+//    println(iroito.getInventario.items)   
   }
 
 }

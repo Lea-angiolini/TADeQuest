@@ -21,10 +21,12 @@ case class Equipo(nombre: String, var heroes: List[Heroe] = List(), var pozoComu
     val funcion = { heroe: Heroe => heroe.copiar.equipar(item).getStatPrincipal - heroe.getStatPrincipal }
     
     val mejorHeroe = mejoresHeroesSegun { funcion }
+
     mejorHeroe match {
-      case x :: _ if funcion {x} > 0 => x.equipar(item)
-      case _ => vender(item)
+      case x :: _  => if (funcion {x} > 0 ) {x.equipar(item)} else {vender(item)}
+      case _ => {vender(item)}
     }
+    
   }
   
   def obtenerMiembro(heroe: Heroe){
@@ -36,12 +38,12 @@ case class Equipo(nombre: String, var heroes: List[Heroe] = List(), var pozoComu
     this.obtenerMiembro(miembroNuevo) 
   }
   
-  private def mejoresHeroesSegun(cuantificador: (Heroe => Int), heroes: List[Heroe]): List[Heroe] = {  
-    heroes.filter { cuantificador(_) == heroes.map { cuantificador(_) }.max }       
+  private def mejoresHeroesSegunDe(cuantificador: (Heroe => Int), listHeroes: List[Heroe]): List[Heroe] = {  
+    listHeroes.filter { cuantificador(_) == listHeroes.map { cuantificador(_) }.max }       
   }
   
   def mejoresHeroesSegun(cuantificador: (Heroe => Int)): List[Heroe] = {  
-    mejoresHeroesSegun(cuantificador,heroes)      
+    mejoresHeroesSegunDe(cuantificador,heroes)      
   }
   
   def lider():Option[Heroe] = {
@@ -54,22 +56,32 @@ case class Equipo(nombre: String, var heroes: List[Heroe] = List(), var pozoComu
   }
   
   def realizarMision(mision: Mision) {
-     var nuevosHeroes = heroes.map { _.copiar }
+     //var nuevosHeroes = heroes.map { _.copiar }  
+     //var a = for(t <- mision.getTareas.toList) yield {  for(h <- heroes) yield (t.puedeRealizarla(this, h))}
      
-     var algo = for(t <- mision.getTareas) yield {
-     var heroesCapaces = for(h <-nuevosHeroes;
-                           if t.puedeRealizarla(this,h))
-                       yield(h)
-       
-     var mejorHeroe = Try(mejoresHeroesSegun(h => t.getFacilidad(this,h).get,heroesCapaces).head)
-     if(mejorHeroe.isSuccess)
-       {t.realizarla(mejorHeroe.get); println("mejor heroe " + mejorHeroe); println("lista de heroes " + nuevosHeroes)}
-     else 
-       return
-     }
-     heroes = nuevosHeroes
+    intentarMision(mision, heroes.map { _.copiar }) match 
+    {
+      case Success(e) => {intentarMision(mision, heroes)
+                          mision.darGanancias(this)}
+      case Failure(e) => println(e)
+    }
+      
   }
   
-  def intentarMision(){}
+  def intentarMision(mision: Mision, heroesAProbar: List[Heroe]): Try[Equipo] = {
+    
+     for(t <- mision.getTareas)  {
+     var heroesCapaces = for(h <- heroesAProbar;
+                             if t.puedeRealizarla(this,h))
+                         yield(h)
+       
+     var mejorHeroe = Try(mejoresHeroesSegunDe(h => t.getFacilidad(this,h).get,heroesCapaces).head)
+     if(mejorHeroe.isSuccess)
+       t.realizarla(mejorHeroe.get)
+     else 
+       return Failure(new MisionFallidaException(t))
+     }
+     return Success(this)
+  }
   
 }
