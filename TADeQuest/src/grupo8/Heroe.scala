@@ -1,53 +1,39 @@
 package grupo8
 
-case class Heroe(statBase: Stats, inventario: Inventario = new Inventario, var trabajo: Trabajo = new SinTrabajo) extends Copiable {
+case class Heroe(statBase: Stats, inventario: Inventario = new Inventario, trabajo: Option[Trabajo] = None) {
   
-  statBase.setRestriccion(x => for(stat <- x.getStats
-                                   if (stat._2 < 1)
-                                ) x.set(stat._1, 1))
-
-    var elementosConStat:Map[String,ModificadorDeStat]  = 
-    Map("inventario" -> inventario, "trabajo" -> trabajo) //TODO Buscar un nombre mejor
+  statBase.setRestriccion(x => {var nuevoStats = x
+                            for(stat <- x.getStats;
+                                   if (stat.get < 1)
+                                ) nuevoStats = x.set(stat.set(1));
+                               nuevoStats})
   
-  var statActual: Stats = statBase.getStatsFinales
+  lazy val statActual: Stats = calcularStat
   
-  private def updateElementos(elemento: String, valor:ModificadorDeStat) {
-    elementosConStat = elementosConStat + (elemento -> valor)
-    getInventario.calcularElementospermitidos(this)
-    calcularStat
+  def setTrabajo(trab: Trabajo): Heroe = copy(trabajo = Some(trab))
+  
+  def descartarTrabajo: Heroe = copy(trabajo = None)
+  
+  private def calcularStat: Stats = {
+    val elementosConStat: List[ModificadorDeStat] = List(statBase, inventario, trabajo.getOrElse(new Stats))
+    elementosConStat.flatMap { _.getStatPara(this) }.reduce(_ + _).getStatsFinales
   }
   
-  def setTrabajo(trab: Trabajo) {
-    updateElementos("trabajo",trab)
-  }
-  
-  def descartarTrabajo {
-    updateElementos("trabajo",new SinTrabajo)
-  }
-  
-  private def calcularStat = {
-    this.statActual = elementosConStat.flatMap( _._2.getStat(this)).fold(statBase)(_ + _)
-    this.statActual = this.statActual.getStatsFinales
-  }
-  
-  def equipar[U <: Item](item: U): Heroe = {
-    updateElementos("inventario",this.getInventario.equipar(item))
-    this
-  }
-  
-  override type A = Heroe
-  override def copiar = copy(statBase = getStatBase.copiar, inventario = getInventario.copiar, trabajo = getTrabajo.copiar)
+  def equipar[U <: Item](item: U): Heroe = {if (item.puedeUsar(this)) 
+                                              copy(inventario = inventario.equipar(item))
+                                            else
+                                              this}
   
   def getStatBase: Stats = statBase
   
-  def getStats: Stats = {calcularStat; this.statActual}
+  def getStats: Stats = this.statActual
   
-  def getTrabajo: Trabajo = this.elementosConStat("trabajo").asInstanceOf[Trabajo]
+  def getTrabajo: Option[Trabajo] = this.trabajo
   
-  def getInventario: Inventario = this.elementosConStat("inventario").asInstanceOf[Inventario]
+  def getInventario: Inventario = this.inventario
   
-  def getStatPrincipal: Int = getTrabajo.getStatPrincipal match {
-    case Some(x) if x != "" => this.statActual.getStats(x)
-    case _ => 0
+  def getStatPrincipal: Option[Int] =  getTrabajo match {
+    case Some(t) => Some(t.getValorStatPrincipal)
+    case None => None
   }
 }

@@ -1,53 +1,76 @@
 package grupo8
 
-case class Stats(hp: Int = 0,fuerza: Int = 0, velocidad: Int = 0, inteligencia: Int = 0,  var restricciones: List[Stats => Unit] = List()) extends ModificadorDeStat{
-  var mapStats: Map[String,Int] = Map("hp"-> hp, "fuerza"->fuerza, "velocidad"->velocidad, "inteligencia"->inteligencia)  
+abstract class Stat(valor: Int){
+  def get: Int = valor
+  def +(inc: Int): Stat
+  def set(setear: Int): Stat
+}
+
+case class HP(valor: Int = 0) extends Stat(valor){
+  def +(inc: Int) = copy(valor + inc)
+  def set(setear: Int) = copy(setear)
+}
+
+case class Fuerza(valor: Int) extends Stat(valor){
+  def +(inc: Int) = copy(valor + inc)
+  def set(setear: Int) = copy(setear)
+}
+
+case class Inteligencia(valor: Int) extends Stat(valor){
+  def +(inc: Int) = copy(valor + inc)
+  def set(setear: Int) = copy(setear)
+}
+
+case class Velocidad(valor: Int) extends Stat(valor){
+  def +(inc: Int) = copy(valor + inc)
+  def set(setear: Int) = copy(setear)
+}
+
+case class Stats(hp: Int = 0 ,fuerza: Int = 0 , velocidad: Int = 0, inteligencia: Int = 0 , restricciones: List[Stats => Stats] = List()) extends ModificadorDeStat{
   
-  type Restriccion = Stats => Unit
-  type A = Stats
+  val stats: List[Stat] = List(HP(hp),Fuerza(fuerza),Inteligencia(inteligencia),Velocidad(velocidad))
   
-  override def copiar: Stats = copy(get("hp"),get("fuerza"),get("velocidad"),get("inteligencia"),restricciones)
+  type Restriccion = Stats => Stats
   
-  def getStats = {
-    mapStats
+  def getStats = stats
+  
+  def getStatPara(heroe: Heroe) = Set(this)
+  
+  def get(stat: Stat): Stat = stats.find { _ match {case stat => true; case _ => false} }.get
+  
+  def set(stat: Stat): Stats = stat match {
+    case HP(v) => copy(hp=v)
+    case Fuerza(v) => copy(fuerza=v)
+    case Inteligencia(v) => copy(inteligencia=v)
+    case Velocidad(v) => copy(velocidad=v)
   }
   
-  def getStat(heroe: Heroe) = {
-    Set(this)
-  }
+   def sumarStat(stat: Stat): Stats = set(get(stat)+stat.get)
+    /* stat match {
+    case HP(v) => copy(hp=v+hp)
+    case Fuerza(v) => copy(fuerza=v+fuerza)
+    case Inteligencia(v) => copy(inteligencia=v+inteligencia)
+    case Velocidad(v) => copy(velocidad=v+velocidad)
+  }*/
   
-  def get(nombre:String) = {
-    mapStats(nombre)
-  }
-  
-  def set(nombre:String, value: Int) {
-    if(mapStats.contains(nombre))
-      mapStats += (nombre -> value)
-  }
-  
-  def setRestriccion(res: Restriccion){
-    restricciones = restricciones ::: (List(res))
-  }
+  def setRestriccion(res: Restriccion): Stats = copy(restricciones = restricciones.+:(res))
   
   def getRestricciones: List[Restriccion] = restricciones
   
   def getStatsFinales: Stats = {
-    var statCopia = copiar
-    for(r <- restricciones) r(statCopia)
+    var statCopia = this
+    for(r <- restricciones) statCopia = r(statCopia)
     statCopia
   }
   
   def +(stat: Stats): Stats = {
-    val nuevoStat: Stats = stat.copiar
-    for( n <- stat.getStats;
-         m <- mapStats;
-         if (m._1 == n._1) 
-        ) nuevoStat.set(n._1, n._2 + m._2) 
-    for(r <- restricciones) nuevoStat.setRestriccion(r)
+    var nuevoStat: Stats = this
+    for( n <- stat.getStats) nuevoStat = nuevoStat.sumarStat(n)
+    for(r <- restricciones) nuevoStat = nuevoStat.setRestriccion(r)
     nuevoStat
   }
 }
 
-abstract class ModificadorDeStat extends Copiable {
-  def getStat(heroe: Heroe): Set[Stats] 
+abstract class ModificadorDeStat{
+  def getStatPara(heroe: Heroe): Set[Stats] 
 }

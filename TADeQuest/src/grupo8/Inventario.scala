@@ -2,52 +2,39 @@ package grupo8
 
 import scala.collection.mutable
 
-case class Inventario(items:mutable.Map[String,Item] = mutable.Map(), talismanes: collection.mutable.Set[Talisman] = collection.mutable.Set[Talisman]()) extends ModificadorDeStat {
-  
-  type A = Inventario
-  
-  override def copiar = copy(mutable.Map() ++ items , mutable.Set() ++ talismanes)
-  
-  /*val items:mutable.Map[String,Item] = mutable.Map()
-  val talismanes: collection.mutable.Set[Talisman] = collection.mutable.Set[Talisman]()*/
-  
-  private def itemAMano[T <: ItemDeUnaMano](item: T){
-    this.items.remove("mano")
-    if (this.items.contains("manoDer")) {
-        this.items("manoIzq") = item.asInstanceOf[ItemDeUnaMano]
-      } else {
-        
-        this.items("manoDer") = item.asInstanceOf[ItemDeUnaMano]
-      }
+case class Inventario(items: Map[String,Item] = Map(), talismanes: Set[Talisman] = Set[Talisman]()) extends ModificadorDeStat {
+    
+  private def itemAMano[T <: ItemDeUnaMano](item: T): Map[String, Item] = {  
+    var nuevosItems = items - "mano"
+    if (this.items.contains("manoDer")) 
+        nuevosItems = this.items + ("manoIzq" -> item)
+    else
+        nuevosItems = this.items + ("manoDer" -> item)
+    nuevosItems
   }
   
   def equipar[U <: Item](item: U): Inventario = {
     
     item match {
-      case s @ Sombrero(des,cal,acep) => this.items("sombrero") = s
-      case a @ Armadura(des,cal,acep) => this.items("armadura") = a 
-      case a @ ArmaDeUnaMano(des,cal,acep) => this.itemAMano(a)
+      case s @ Sombrero(des,cal,acep) => copy(items+("sombrero" -> s))
+      case a @ Armadura(des,cal,acep) => copy(items+("armadura" -> a))
+      case a @ ArmaDeUnaMano(des,cal,acep) => copy(items = itemAMano(a))
 
-      case e @ Escudo(des,cal,acep) => this.itemAMano(e)
+      case e @ Escudo(des,cal,acep) => copy(items = itemAMano(e))
 
-      case a @ ArmaDeDosManos(des,cal,acep) =>
-        this.items.remove("manoDer"); this.items.remove("manoIzq")
-        this.items("mano") = a
+      case a @ ArmaDeDosManos(des,cal,acep) => copy(items - "manoDer" - "manoIzq" + ("mano" -> a))
       
-      case t @ Talisman(des,cal,acep) => this.talismanes.add(t)
+      case t @ Talisman(des,cal,acep) => copy(talismanes = talismanes + t)
     }  
-    this
   }
   
-  def getStat(heroe: Heroe):Set[Stats] = {   
+  def getStatPara(heroe: Heroe):Set[Stats] = {   
     val i = (for(i <- items) yield (i._2.calcularStatpara(heroe))).toSet 
     val t = (for(t <- talismanes) yield (t.calcularStatpara(heroe)))
     i.++(t)
   }
   
-  def calcularElementospermitidos(heroe: Heroe) {
-    for (i <- items; if (!i._2.puedeUsar(heroe))) {items.remove(i._1)}
-  }
-  
   def getTalismanes = talismanes
+  
+  def getItems = items
 }
