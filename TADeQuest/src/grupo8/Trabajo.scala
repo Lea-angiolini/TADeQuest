@@ -1,19 +1,18 @@
 package grupo8
 
-case class Trabajo(descripcion: String, statBase: Stats, statPrincipal: String) extends ModificadorDeStat{
+case class Trabajo(descripcion: String, statBase: Stats, statPrincipal: Stat) extends ModificadorDeStat{
    
   def getStatPara(heroe: Heroe): Set[Stats] = Set(statBase)
   
-  def getStatPrincipal: Option[String] = Some(statPrincipal)
+  def getStatPrincipal: Option[Stat] = Some(statPrincipal)
   
   def getDescripcion: String = descripcion
   
-  def getValorStatPrincipal: Int = statBase.get(statPrincipal)
+  def getValorStatPrincipal: Int = statBase.get(statPrincipal).get
 }
 
-class Guerrero extends Trabajo("Guerrero", new Stats(10,15,0,-10),"fuerza")
+class Guerrero extends Trabajo("Guerrero", new Stats(10,15,0,-10),new Fuerza(15))
 
-class Mago extends Trabajo("Mago", new Stats(0,-20,0,20),"inteligencia")
+class Mago extends Trabajo("Mago", new Stats(0,-20,0,20),new Inteligencia(20))
 
-class Ladron extends Trabajo("Ladrón", new Stats(-5,0,10,0),"velocidad")
-  }
+class Ladron extends Trabajo("Ladrón", new Stats(-5,0,10,0),new Velocidad(10))

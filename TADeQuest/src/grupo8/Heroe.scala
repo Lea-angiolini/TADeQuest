@@ -1,6 +1,6 @@
 package grupo8
 
-case class Heroe(statBase: Stats, inventario: Inventario = new Inventario, trabajo: Option[Trabajo] = None) {
+case class Heroe(id: String, statBase: Stats, inventario: Inventario = new Inventario, trabajo: Option[Trabajo] = None) {
   
   statBase.setRestriccion(x => {var nuevoStats = x
                             for(stat <- x.getStats;
