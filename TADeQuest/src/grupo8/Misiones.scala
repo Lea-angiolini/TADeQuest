@@ -7,6 +7,20 @@ case class Mision(tareas: Set[Tarea], ganancias: Equipo => Equipo){
   def getTareas = tareas
   
   def darGanancias(equipo: Equipo): Equipo = ganancias(equipo)
+  
+  def realizarTareas(equipo: Equipo): (Equipo,Throwable) = {
+    
+    val estadoFinal = tareas.foldLeft(Try(equipo))((estadoAnt,tareaActual) => 
+      estadoAnt match {
+        case Failure(e) => Failure(e)
+        case Success(e) => tareaActual.realizarla(e)
+      })
+ 
+    estadoFinal match{
+      case Failure(excep) => (equipo,excep)
+      case Success(equipo) => (darGanancias(equipo),null)
+    }
+  }
 }
 
 
@@ -51,6 +65,5 @@ class robarTalisman(talisman: Talisman) extends Tarea("Robar Talismán",
                                   {(e,h) => e.lider() match {
                                     case Some(lider) if lider.getTrabajo.getOrElse(null) == Ladron => Some(h.getStats.get(Velocidad))
                                     case _ => None}},
-                                  {(e,h) => h.getTrabajo match {
-                                    case Some(t) if t == Ladron || t == Mago => e
-                                    case _ => e.obtenerItem(talisman)}})
+                                  {(e,h) => e.obtenerItem(talisman)})
+

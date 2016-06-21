@@ -50,33 +50,12 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
     mejorHeroeSegun(heroe => heroe.getStatPrincipal.getOrElse(0))
   }
   
- /* def realizarMision(mision: Mision) {
-     //var nuevosHeroes = heroes.map { _.copiar }  
-     //var a = for(t <- mision.getTareas.toList) yield {  for(h <- heroes) yield (t.puedeRealizarla(this, h))}
-     
-    intentarMision(mision, heroes.map { _.copiar }) match 
-    {
-      case Success(e) => {intentarMision(mision, heroes)
-                          mision.darGanancias(this)}
-      case Failure(e) => println(e)
-    }
-      
+  def realizarTarea(tarea: Tarea): Try[Equipo] = {
+    tarea.realizarla(this)
   }
   
-  def intentarMision(mision: Mision, heroesAProbar: List[Heroe]): Try[Equipo] = {
-    
-     for(t <- mision.getTareas)  {
-     var heroesCapaces = for(h <- heroesAProbar;
-                             if t.puedeRealizarla(this,h))
-                         yield(h)
-       
-     var mejorHeroe = Try(mejoresHeroesSegunDe(h => t.getFacilidad(this,h).get,heroesCapaces).head)
-     if(mejorHeroe.isSuccess)
-       t.realizarla(mejorHeroe.get)
-     else 
-       return Failure(new MisionFallidaException(t))
-     }
-     return Success(this)
-  }*/
+  def realizarMision(mision: Mision): (Equipo,Throwable) = {
+    mision.realizarTareas(this)
+  }
 
 }
