@@ -2,7 +2,7 @@ package grupo8
 
 import scala.util._
 
-case class Mision(tareas: Set[Tarea], ganancias: Equipo => Unit) extends Copiable{
+case class Mision(tareas: Set[/*Tarea*/Trabajo], ganancias: Equipo => Unit) extends Copiable{
   
   type A = Mision
   def getTareas = tareas
@@ -32,10 +32,11 @@ abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[In
   
   def realizarla(heroe: Heroe) = cambios(heroe)
   
+  
 }
-
+/*
 class pelearContraMonstruo() extends Tarea("Pelear contra Monstruo", {(e,h) => e.lider() match {
                                                                       case Some(h) if(h.getTrabajo.descripcion == "Guerrero") => Some(20)
                                                                       case _ => Some(10)
                                                                       }} , 
-                                            {(x) => x.getStatBase.set("hp", x.getStatBase.get("hp") - 25)})
+                                            {(x) => x.getStatBase.set("hp", x.getStatBase.get("hp") - 25)})*/

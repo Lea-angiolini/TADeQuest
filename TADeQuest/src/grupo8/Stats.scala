@@ -41,7 +41,7 @@ case class Stats(hp: Int = 0 ,fuerza: Int = 0 , velocidad: Int = 0, inteligencia
   def +(stat: Stats): Stats = {
     var nuevoStat: Stats = this
     for( (k,v) <- stat.getStats) nuevoStat = nuevoStat.sumarStat(k,v)
-    for(r <- restricciones) nuevoStat = nuevoStat.setRestriccion(r)
+    for(r <- stat.getRestricciones) nuevoStat = nuevoStat.setRestriccion(r)
     nuevoStat
   }
 }

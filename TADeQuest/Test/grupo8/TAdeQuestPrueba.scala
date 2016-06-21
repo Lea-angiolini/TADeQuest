@@ -28,21 +28,21 @@ class TAdeQuestPrueba {
   
   @Before
   def setup = {
-   ashe = new Heroe(new Stats(100,30,40,60))
-   ashe.setTrabajo(new Mago)
-   coco = new Heroe(new Stats(100,100,10,10))
-   coco.setTrabajo(new Guerrero)
-   pepe = new Heroe(new Stats(100,31,20,15))
-   pepe.setTrabajo(new Ladron)
+   ashe = new Heroe("ashe",new Stats(100,30,40,60))
+   ashe = ashe.setTrabajo(Mago)
+   coco = new Heroe("coco", new Stats(100,100,10,10))
+   coco = coco.setTrabajo(Guerrero)
+   pepe = new Heroe("pepe",new Stats(100,31,20,15))
+   pepe = pepe.setTrabajo(Ladron)
    
-   cascoVikingo = new Sombrero("Casco vikingo", x => new Stats(10,0,0,0), x => x.getStatBase.get("fuerza") > 30)
+   cascoVikingo = new Sombrero("Casco vikingo", x => new Stats(10,0,0,0), x => x.getStatBase.get(Fuerza) > 30)
    palitoMagico = new ArmaDeUnaMano("Palito Mágico", x => new Stats(0,0,0,20), 
-                     x => x.getTrabajo.getDescripcion == "Mago" || (x.getTrabajo.getDescripcion == "Ladrón" && x.getStatBase.get("inteligencia") > 30))
+                     x => x.getTrabajo.getOrElse(null) == Mago || (x.getTrabajo.getOrElse(null) == Ladron && x.getStatBase.get(Inteligencia) > 30))
    armaduraElegante = new Armadura("Armadura Elegante-Sport", x => new Stats(-30,0,30,0), x => true)
    arcoViejo = new ArmaDeDosManos("Arco Viejo", x => new Stats(0,2,0,0), x => true)
-   escudoAntiRobo = new Escudo("Escudo Anti-Robo", x => new Stats(20,0,0,0), x => x.getTrabajo.getDescripcion != "Ladrón" && x.getStatBase.get("fuerza") >= 20)
+   escudoAntiRobo = new Escudo("Escudo Anti-Robo", x => new Stats(20,0,0,0), x => x.getTrabajo.getOrElse(null) != Ladron && x.getStatBase.get(Fuerza) >= 20)
    talismanDedicacion = new Talisman("Talismán de Dedicacion", 
-                         {x => val valor: Int = (x.getTrabajo.getValorStatPrincipal * 0.1).toInt
+                         {x => val valor: Int = (x.getStatPrincipal.getOrElse(0) * 0.1).toInt
                            new Stats(valor,valor,valor,valor)}, x => true)
    
    talismanDelMinimalismo = new Talisman("Talisman del minimalismo", 
@@ -54,26 +54,27 @@ class TAdeQuestPrueba {
    vinchaDelBuffaloDeAgua = new Sombrero("vincha Del Buffalo De Agua",
                                
                                x=>
-                                 if(x.getStatBase.get("fuerza") > x.getStatBase.get("inteligencia"))
+                                 if(x.getStatBase.get(Fuerza) > x.getStatBase.get(Inteligencia))
                                     new Stats(0,0,0,30)
                                  else
                                    new Stats(10,10,10,0),
-                                 x => x.getTrabajo.getDescripcion == "Sin trabajo" )
+                                 x => x.getTrabajo.isEmpty)
    
    talismanMaldito = new Talisman("Talisman Maldito",
-                                   (heroe) => Stats(1,1,1,1, List({ x => for (s <- x.getStats) x.set(s._1, 1)})), 
+                                   (heroe) => Stats(1,1,1,1, List({ x =>Stats(1,1,1,1)})), 
                                    (heroe) => true)
    
    espadaDelaVida = new ArmaDeDosManos("Espada de la Vida",
-                                       heroe => Stats(restricciones = List({x => x.set("fuerza",x.get("hp"))})),
+                                       heroe => Stats(restricciones = List({x => x.set(Fuerza,x.get(HP))})),
                                        heroe => true)
+                                       
+  
+                                      
    
-   pikachu = new Heroe(new Stats(100,100,10,10))//Stats(hp: Int,fuerza: Int, velocidad: Int, inteligencia: Int)
+   pikachu = new Heroe("pikachu",new Stats(100,100,10,10))//Stats(hp: Int,fuerza: Int, velocidad: Int, inteligencia: Int)
    
    //Trabajo(descripcion: String, statBase: Stats, statPrincipal: String)
-   guerrero = new Guerrero
-   mago = new Mago
-   ladron = new Ladron
+
   }
    
   def compararStats(s1: Stats, s2: Stats):Boolean = {

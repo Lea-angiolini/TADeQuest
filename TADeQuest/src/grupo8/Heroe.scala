@@ -5,7 +5,7 @@ case class Heroe(id: String, statBase: Stats, inventario: Inventario = new Inven
   statBase.setRestriccion(x => {var nuevoStats = x
                             for((k,v) <- x.getStats;
                                    if (v < 1)
-                                ) nuevoStats = x.set(k,1);
+                                )nuevoStats = x.set(k,1)
                                nuevoStats})
   
   lazy val statActual: Stats = calcularStat
@@ -15,7 +15,7 @@ case class Heroe(id: String, statBase: Stats, inventario: Inventario = new Inven
   def descartarTrabajo: Heroe = copy(trabajo = None)
   
   private def calcularStat: Stats = {
-    val elementosConStat: List[ModificadorDeStat] = List(statBase, inventario, trabajo.getOrElse(new Stats))
+    val elementosConStat: List[ModificadorDeStat] = List(getStatBase, inventario, trabajo.getOrElse(new Stats))
     elementosConStat.flatMap { _.getStatPara(this) }.reduce(_ + _).getStatsFinales
   }
   
@@ -24,7 +24,10 @@ case class Heroe(id: String, statBase: Stats, inventario: Inventario = new Inven
                                             else
                                               this}
   
-  def getStatBase: Stats = statBase
+  def getStatBase: Stats = statBase.setRestriccion(x => {var nuevoStats = x
+                                                         for((k,v) <- x.getStats; if (v < 1)) 
+                                                           nuevoStats = x.set(k,1)
+                                                          nuevoStats})
   
   def getStats: Stats = this.statActual
   

@@ -9,10 +9,10 @@ class ObjetosCopiables extends TAdeQuestPrueba{
   
   @Test
   def copiarUnHeroe = {
-    var heroe = new Heroe(new Stats(10,10,10,10))
+    var heroe = new Heroe("heroe",new Stats(10,10,10,10))
     var heroeCopia: Heroe = ???
     
-    heroeCopia = heroe.setTrabajo(new Guerrero)
+    heroeCopia = heroe.setTrabajo(Guerrero)
     heroeCopia = heroe.equipar(armaduraElegante)
     
     assertTrue(compararStats(new Stats(2,2,2,10).getStatsFinales,new Stats(1,1,1,0) + new Stats(0,0,0,1) + new Stats(1,1,1,9)))

@@ -20,8 +20,8 @@ class HayEquipo extends TAdeQuestPrueba{
   @Before
   override def setup = {
     super.setup
-   ashe = new Heroe(new Stats(100,30,40,60)) 
-   pikachu = new Heroe(new Stats(100,100,10,10))
+   ashe = new Heroe("ashe",new Stats(100,30,40,60)) 
+   pikachu = new Heroe("pikachu",new Stats(100,100,10,10))
    iroito = new Heroe(new Stats(100,100,100,1))
    
    guerrero = new Guerrero
@@ -81,7 +81,7 @@ class HayEquipo extends TAdeQuestPrueba{
     })
     
     //TODO No hay lider claro
-    var soyIgualDeGrosaQueAshe = new Heroe(new Stats(100,30,40,60)) 
+    var soyIgualDeGrosaQueAshe = new Heroe("soyIgualDeGrosaQueAshe",new Stats(100,30,40,60)) 
     soyIgualDeGrosaQueAshe.setTrabajo(mago)
     
     equipo.obtenerMiembro(soyIgualDeGrosaQueAshe)
@@ -122,5 +122,4 @@ class HayEquipo extends TAdeQuestPrueba{
 //    println(iroito.getStats)
 //    println(iroito.getInventario.items)   
   }
-
 }

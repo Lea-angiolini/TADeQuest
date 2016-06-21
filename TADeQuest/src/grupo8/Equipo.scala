@@ -83,5 +83,5 @@ case class Equipo(nombre: String, var heroes: List[Heroe] = List(), var pozoComu
      }
      return Success(this)
   }
-  
+
 }
