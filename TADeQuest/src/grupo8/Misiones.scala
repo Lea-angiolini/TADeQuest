@@ -2,18 +2,16 @@ package grupo8
 
 import scala.util._
 
-case class Mision(tareas: Set[Tarea], ganancias: Equipo => Unit){
+case class Mision(tareas: Set[Tarea], ganancias: Equipo => Equipo){
   
   def getTareas = tareas
   
-  def darGanancias(equipo: Equipo) = ganancias(equipo)
+  def darGanancias(equipo: Equipo): Equipo = ganancias(equipo)
 }
 
 
-abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[Int], cambios: Heroe => Unit){
+abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[Int], cambios: (Equipo,Heroe) => Equipo){
 
-  def getFacilidad = facilidad
-  
   def getDescripcion = descripcion
   
   def puedeRealizarla(equipo: Equipo, heroe: Heroe): Boolean = {
@@ -27,13 +25,32 @@ abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[In
     facilidad(equipo, heroe)
   }
   
-  def realizarla(heroe: Heroe) = cambios(heroe)
-  
-  
+  def realizarla(equipo: Equipo): Try[Equipo] = {
+    val cuantificador = facilidad(equipo,_:Heroe)
+    val heroe = Try(equipo.mejoresHeroesSegun(cuantificador(_).get).head)
+    heroe match {
+      case Success(h) => Success(cambios(equipo,h))
+      case Failure(f) => Failure(new TareaFallidaException(this)) 
+    }
+  }
 }
-/*
-class pelearContraMonstruo() extends Tarea("Pelear contra Monstruo", {(e,h) => e.lider() match {
-                                                                      case Some(h) if(h.getTrabajo.descripcion == "Guerrero") => Some(20)
-                                                                      case _ => Some(10)
-                                                                      }} , 
-                                            {(x) => x.getStatBase.set("hp", x.getStatBase.get("hp") - 25)})*/
+
+object pelearContraMonstruo extends Tarea("Pelear contra Monstruo", 
+                                          {(e,h) => e.lider() match {
+                                                case Some(h) if(h.getTrabajo.getOrElse(null) == Guerrero) => Some(20)
+                                                case _ => Some(10)}}, 
+                                           {(e,h) => e.reemplazarMiembro(h.sumarStatBase(HP, -10),h)})
+
+object forzarPureta extends Tarea("Forzar Puerta",
+                                  {(e,h) => Some(h.getStats.get(Inteligencia) + 10 * e.getHeroes.count(_.getTrabajo.getOrElse(null) == Ladron))},                
+                                  {(e,h) => h.getTrabajo match {
+                                    case Some(t) if t == Ladron || t == Mago => e
+                                    case _ => e.reemplazarMiembro(h.sumarStatBase(Fuerza, 1).sumarStatBase(HP, -5),h)}})
+
+class robarTalisman(talisman: Talisman) extends Tarea("Robar Talismán",
+                                  {(e,h) => e.lider() match {
+                                    case Some(lider) if lider.getTrabajo.getOrElse(null) == Ladron => Some(h.getStats.get(Velocidad))
+                                    case _ => None}},
+                                  {(e,h) => h.getTrabajo match {
+                                    case Some(t) if t == Ladron || t == Mago => e
+                                    case _ => e.obtenerItem(talisman)}})

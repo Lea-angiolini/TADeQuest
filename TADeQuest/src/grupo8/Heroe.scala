@@ -2,12 +2,6 @@ package grupo8
 
 case class Heroe(id: String, statBase: Stats, inventario: Inventario = new Inventario, trabajo: Option[Trabajo] = None) {
   
-  statBase.setRestriccion(x => {var nuevoStats = x
-                            for((k,v) <- x.getStats;
-                                   if (v < 1)
-                                )nuevoStats = x.set(k,1)
-                               nuevoStats})
-  
   lazy val statActual: Stats = calcularStat
   
   def setTrabajo(trab: Trabajo): Heroe = copy(trabajo = Some(trab))
@@ -28,6 +22,11 @@ case class Heroe(id: String, statBase: Stats, inventario: Inventario = new Inven
                                                          for((k,v) <- x.getStats; if (v < 1)) 
                                                            nuevoStats = x.set(k,1)
                                                           nuevoStats})
+  
+                                                          
+  def sumarStatBase(stat: Stat, valor: Int): Heroe = {
+    copy(statBase = statBase.sumarStat(stat, valor))  
+  }
   
   def getStats: Stats = this.statActual
   

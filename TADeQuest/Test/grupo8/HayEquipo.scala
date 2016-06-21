@@ -96,25 +96,19 @@ class HayEquipo extends TAdeQuestPrueba{
     
   }
   
- /* @Test
+  @Test
   def hacerMisiones  {
-    equipo.obtenerMiembro(ashe)
+    equipo = equipo.obtenerMiembro(ashe)
     //equipo.obtenerMiembro(pikachu)
-    equipo.obtenerMiembro(iroito)
-    //var mision = new Mision(Set(new pelearContraMonstruo), equipo => equipo.ObtenerItem(armaduraElegante))
+    //equipo = equipo.obtenerMiembro(iroito)
+    var mision = new Mision(Set(pelearContraMonstruo), equipo => equipo.obtenerItem(armaduraElegante))
     //equipo.realizarMision(mision)
-    ashe.setTrabajo(new Mago)
-    pikachu.setTrabajo(new Ladron)
-    iroito.setTrabajo(new Ladron)
+    ashe = ashe.setTrabajo(Mago)
+    pikachu = pikachu.setTrabajo(Ladron)
+    iroito = iroito.setTrabajo(Ladron)
     //ashe.equipar(palitoMagico)
     
-    equipo.ObtenerItem(armaduraElegante)
-//    println(ashe.getStats)
-//    println(ashe.getInventario.items)
-//    println(pikachu.getStats)
-//    println(pikachu.getTrabajo.descripcion)
-//    println(pikachu.getInventario.items)
-//    println(iroito.getStats)
-//    println(iroito.getInventario.items)   
-  }*/
+    equipo = equipo.obtenerItem(armaduraElegante)
+   
+  }
 }

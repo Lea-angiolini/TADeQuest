@@ -1,6 +1,6 @@
 package grupo8
 
-class MisionFallidaException(tarea: Tarea) extends Exception{
+class TareaFallidaException(tarea: Tarea) extends Exception{
   
   def getTarea = tarea
   
