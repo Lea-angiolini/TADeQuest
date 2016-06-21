@@ -2,12 +2,9 @@ package grupo8
 
 import scala.util._
 
-case class Mision(tareas: Set[/*Tarea*/Trabajo], ganancias: Equipo => Unit) extends Copiable{
+case class Mision(tareas: Set[Tarea], ganancias: Equipo => Unit){
   
-  type A = Mision
   def getTareas = tareas
-  
-  override def copiar = copy(tareas,ganancias)
   
   def darGanancias(equipo: Equipo) = ganancias(equipo)
 }
