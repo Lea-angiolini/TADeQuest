@@ -1,34 +1,15 @@
 package grupo8
 
-abstract class Stat(valor: Int){
-  def get: Int = valor
-  def +(inc: Int): Stat
-  def set(setear: Int): Stat
-}
+abstract class Stat
 
-case class HP(valor: Int = 0) extends Stat(valor){
-  def +(inc: Int) = copy(valor + inc)
-  def set(setear: Int) = copy(setear)
-}
-
-case class Fuerza(valor: Int) extends Stat(valor){
-  def +(inc: Int) = copy(valor + inc)
-  def set(setear: Int) = copy(setear)
-}
-
-case class Inteligencia(valor: Int) extends Stat(valor){
-  def +(inc: Int) = copy(valor + inc)
-  def set(setear: Int) = copy(setear)
-}
-
-case class Velocidad(valor: Int) extends Stat(valor){
-  def +(inc: Int) = copy(valor + inc)
-  def set(setear: Int) = copy(setear)
-}
+case object HP extends Stat
+case object Fuerza extends Stat
+case object Inteligencia extends Stat
+case object Velocidad extends Stat
 
 case class Stats(hp: Int = 0 ,fuerza: Int = 0 , velocidad: Int = 0, inteligencia: Int = 0 , restricciones: List[Stats => Stats] = List()) extends ModificadorDeStat{
   
-  val stats: List[Stat] = List(HP(hp),Fuerza(fuerza),Inteligencia(inteligencia),Velocidad(velocidad))
+  val stats: Map[Stat,Int] = Map(HP -> hp,Fuerza -> fuerza, Inteligencia -> inteligencia, Velocidad -> velocidad)
   
   type Restriccion = Stats => Stats
   
@@ -36,22 +17,16 @@ case class Stats(hp: Int = 0 ,fuerza: Int = 0 , velocidad: Int = 0, inteligencia
   
   def getStatPara(heroe: Heroe) = Set(this)
   
-  def get(stat: Stat): Stat = stats.find { _ match {case stat => true; case _ => false} }.get
+  def get[T <: Stat](stat: T): Int = stats.get(stat).get
   
-  def set(stat: Stat): Stats = stat match {
-    case HP(v) => copy(hp=v)
-    case Fuerza(v) => copy(fuerza=v)
-    case Inteligencia(v) => copy(inteligencia=v)
-    case Velocidad(v) => copy(velocidad=v)
+  def set(stat: Stat, valor: Int): Stats = stat match {
+    case HP => copy(hp=valor)
+    case Fuerza => copy(fuerza=valor)
+    case Inteligencia => copy(inteligencia=valor)
+    case Velocidad => copy(velocidad=valor)
   }
   
-   def sumarStat(stat: Stat): Stats = set(get(stat)+stat.get)
-    /* stat match {
-    case HP(v) => copy(hp=v+hp)
-    case Fuerza(v) => copy(fuerza=v+fuerza)
-    case Inteligencia(v) => copy(inteligencia=v+inteligencia)
-    case Velocidad(v) => copy(velocidad=v+velocidad)
-  }*/
+  def sumarStat(stat: Stat, valor: Int): Stats = set(stat, get(stat)+valor)
   
   def setRestriccion(res: Restriccion): Stats = copy(restricciones = restricciones.+:(res))
   
@@ -65,7 +40,7 @@ case class Stats(hp: Int = 0 ,fuerza: Int = 0 , velocidad: Int = 0, inteligencia
   
   def +(stat: Stats): Stats = {
     var nuevoStat: Stats = this
-    for( n <- stat.getStats) nuevoStat = nuevoStat.sumarStat(n)
+    for( (k,v) <- stat.getStats) nuevoStat = nuevoStat.sumarStat(k,v)
     for(r <- restricciones) nuevoStat = nuevoStat.setRestriccion(r)
     nuevoStat
   }

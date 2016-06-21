@@ -3,9 +3,9 @@ package grupo8
 case class Heroe(id: String, statBase: Stats, inventario: Inventario = new Inventario, trabajo: Option[Trabajo] = None) {
   
   statBase.setRestriccion(x => {var nuevoStats = x
-                            for(stat <- x.getStats;
-                                   if (stat.get < 1)
-                                ) nuevoStats = x.set(stat.set(1));
+                            for((k,v) <- x.getStats;
+                                   if (v < 1)
+                                ) nuevoStats = x.set(k,1);
                                nuevoStats})
   
   lazy val statActual: Stats = calcularStat
