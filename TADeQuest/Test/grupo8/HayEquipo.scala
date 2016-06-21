@@ -22,22 +22,18 @@ class HayEquipo extends TAdeQuestPrueba{
     super.setup
    ashe = new Heroe("ashe",new Stats(100,30,40,60)) 
    pikachu = new Heroe("pikachu",new Stats(100,100,10,10))
-   iroito = new Heroe(new Stats(100,100,100,1))
-   
-   guerrero = new Guerrero
-   mago = new Mago
-   ladron = new Ladron
-   
-   pikachu.setTrabajo(ladron)
+   iroito = new Heroe("iroito", new Stats(100,100,100,1))
+      
+   pikachu.setTrabajo(Ladron)
    equipo = new Equipo("equipo charlie")
    }
   
   @Test
   def mejorHeroeSegun(){
-    equipo.obtenerMiembro(ashe)
-    equipo.obtenerMiembro(pikachu)
+    equipo = equipo.obtenerMiembro(ashe)
+    equipo = equipo.obtenerMiembro(pikachu)
     
-    assertTrue(equipo.mejoresHeroesSegun { heroe => heroe.getStats.get("inteligencia") }.contains(ashe))
+    assertTrue(equipo.mejoresHeroesSegun { heroe => heroe.getStats.get(Inteligencia) }.contains(ashe))
   }
   
   @Test
@@ -47,8 +43,8 @@ class HayEquipo extends TAdeQuestPrueba{
   
   @Test
   def obtenerMiembro(){
-    equipo.obtenerMiembro(ashe)
-    equipo.obtenerMiembro(pikachu)
+    equipo = equipo.obtenerMiembro(ashe)
+    equipo = equipo.obtenerMiembro(pikachu)
     
     assertTrue(equipo.heroes.contains(ashe))
     assertTrue(equipo.heroes.contains(pikachu))
@@ -56,10 +52,10 @@ class HayEquipo extends TAdeQuestPrueba{
   
   @Test
   def reemplazarMiembro(){
-    equipo.obtenerMiembro(ashe)
-    equipo.obtenerMiembro(pikachu)
+    equipo = equipo.obtenerMiembro(ashe)
+    equipo = equipo.obtenerMiembro(pikachu)
     
-    equipo.reemplazarMiembro(iroito, ashe)
+    equipo = equipo.reemplazarMiembro(iroito, ashe)
     
     assertTrue(!equipo.heroes.contains(ashe))
     assertTrue(equipo.heroes.contains(pikachu))
@@ -69,22 +65,21 @@ class HayEquipo extends TAdeQuestPrueba{
   @Test
   def lider(){
     
-    ashe.setTrabajo(mago)
+    ashe = ashe.setTrabajo(Mago)
     
-    equipo.obtenerMiembro(ashe)
-    equipo.obtenerMiembro(pikachu)
-    equipo.obtenerMiembro(iroito)
+    equipo = equipo.obtenerMiembro(ashe)
+    equipo = equipo.obtenerMiembro(pikachu)
+    equipo = equipo.obtenerMiembro(iroito)
     
     assertTrue(equipo.lider() match{
       case Some(x) if x == ashe => true
       case _ => false
     })
     
-    //TODO No hay lider claro
     var soyIgualDeGrosaQueAshe = new Heroe("soyIgualDeGrosaQueAshe",new Stats(100,30,40,60)) 
-    soyIgualDeGrosaQueAshe.setTrabajo(mago)
+    soyIgualDeGrosaQueAshe = soyIgualDeGrosaQueAshe.setTrabajo(Mago)
     
-    equipo.obtenerMiembro(soyIgualDeGrosaQueAshe)
+    equipo = equipo.obtenerMiembro(soyIgualDeGrosaQueAshe)
     
     assertTrue(equipo.lider() match{
       case Some(x) => false
@@ -101,7 +96,7 @@ class HayEquipo extends TAdeQuestPrueba{
     
   }
   
-  @Test
+ /* @Test
   def hacerMisiones  {
     equipo.obtenerMiembro(ashe)
     //equipo.obtenerMiembro(pikachu)
@@ -121,5 +116,5 @@ class HayEquipo extends TAdeQuestPrueba{
 //    println(pikachu.getInventario.items)
 //    println(iroito.getStats)
 //    println(iroito.getInventario.items)   
-  }
+  }*/
 }

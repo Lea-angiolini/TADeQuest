@@ -22,10 +22,7 @@ class TAdeQuestPrueba {
   var espadaDelaVida: ArmaDeDosManos = null
   
   var pikachu: Heroe = null
-  var guerrero: Trabajo = null
-  var mago: Trabajo = null
-  var ladron: Trabajo = null
-  
+
   @Before
   def setup = {
    ashe = new Heroe("ashe",new Stats(100,30,40,60))

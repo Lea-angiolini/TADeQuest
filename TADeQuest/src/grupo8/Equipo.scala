@@ -2,60 +2,55 @@ package grupo8
 
 import scala.util._
 
-case class Equipo(nombre: String, var heroes: List[Heroe] = List(), var pozoComun: Int = 0) extends Copiable{
+case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int = 0){
   
-  type A = Equipo
-  override def copiar = copy(heroes = heroes.map(_.copiar), pozoComun = pozoComun)
-     
-  def pozoComun_+=(valor: Int) = pozoComun += valor
+  def adherirAlPozoComun(valor: Int): Equipo = copy(pozoComun = pozoComun+valor)
  
-  def getNombre: String =   nombre
+  def getNombre: String = nombre
   
   def getHeroes: List[Heroe] = heroes
   
-  def vender(item: Item) {
-    //pozoComun_+=(item.valor)
+  def vender(item: Item): Equipo = {
+    adherirAlPozoComun(item.getValor)
   }
-  
-  def ObtenerItem(item: Item){
-    val funcion = { heroe: Heroe => heroe.copiar.equipar(item).getStatPrincipal - heroe.getStatPrincipal }
     
-    val mejorHeroe = mejoresHeroesSegun { funcion }
-
-    mejorHeroe match {
-      case x :: _  => if (funcion {x} > 0 ) {x.equipar(item)} else {vender(item)}
-      case _ => {vender(item)}
-    }
-    
-  }
-  
-  def obtenerMiembro(heroe: Heroe){
-    this.heroes = this.getHeroes ::: List(heroe)
-  }
-  
-  def reemplazarMiembro(miembroNuevo: Heroe, miembroViejo: Heroe){
-    this.heroes = this.getHeroes.filter(_ != miembroViejo)
-    this.obtenerMiembro(miembroNuevo) 
-  }
-  
-  private def mejoresHeroesSegunDe(cuantificador: (Heroe => Int), listHeroes: List[Heroe]): List[Heroe] = {  
-    listHeroes.filter { cuantificador(_) == listHeroes.map { cuantificador(_) }.max }       
-  }
-  
   def mejoresHeroesSegun(cuantificador: (Heroe => Int)): List[Heroe] = {  
-    mejoresHeroesSegunDe(cuantificador,heroes)      
+    heroes.filter { cuantificador(_) == heroes.map { cuantificador(_) }.max }    
   }
+  
+  def mejorHeroeSegun(cuantificador: (Heroe => Int)): Option[Heroe] = { 
+    mejoresHeroesSegun(cuantificador) match {
+      case h :: Nil => Some(h)
+      case _ => None
+    }
+  }
+  
+  def obtenerItem(item: Item): Equipo = {
+    val funcion = { heroe: Heroe => heroe.equipar(item).getStatPrincipal.getOrElse(0) - heroe.getStatPrincipal.getOrElse(0) }
+    
+    mejorHeroeSegun(funcion) match {
+      case Some(h)  => if (funcion(h) > 0 ) {copy(heroes = heroes.filterNot(x => x.id == h.id).+:(h.equipar(item)))} else {vender(item)}
+      case None => {vender(item)}
+    }
+  }
+ 
+  def obtenerMiembro(heroe: Heroe): Equipo = {
+    if(!heroes.exists {_.id == heroe.id})
+      copy(heroes = heroes.+:(heroe))
+    else
+      this
+  }
+  
+  def reemplazarMiembro(miembroNuevo: Heroe, miembroViejo: Heroe): Equipo = {
+    var listaNueva = heroes.filter { _.id != miembroViejo.id }
+    copy(heroes = listaNueva.+:(miembroNuevo)) 
+  } 
   
   def lider():Option[Heroe] = {
-    val lista = this.mejoresHeroesSegun { heroe => heroe.getStatPrincipal }
-    
-    return lista match {
-      case valor :: Nil => Some(valor)
-      case _ => None
-    }  
+    mejorHeroeSegun(heroe => heroe.getStatPrincipal.getOrElse(0))
   }
   
-  def realizarMision(mision: Mision) {
+ /* def realizarMision(mision: Mision) {
      //var nuevosHeroes = heroes.map { _.copiar }  
      //var a = for(t <- mision.getTareas.toList) yield {  for(h <- heroes) yield (t.puedeRealizarla(this, h))}
      
@@ -82,6 +77,6 @@ case class Equipo(nombre: String, var heroes: List[Heroe] = List(), var pozoComu
        return Failure(new MisionFallidaException(t))
      }
      return Success(this)
-  }
+  }*/
 
 }

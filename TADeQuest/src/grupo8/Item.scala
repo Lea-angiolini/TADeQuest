@@ -5,7 +5,8 @@ abstract class Item(descripcion: String, calculoStat: Heroe => Stats, acepta: He
   def calcularStatpara(heroe: Heroe): Stats = this.calculoStat(heroe)
   
   def puedeUsar(heroe: Heroe): Boolean = this.acepta(heroe)
-
+  
+  def getValor: Int = 100
 }
 
 case class Talisman(descripcion: String, calculoStat: (Heroe) => Stats, acepta: Heroe => Boolean) extends Item(descripcion, calculoStat, acepta)
