@@ -98,17 +98,24 @@ class HayEquipo extends TAdeQuestPrueba{
   
   @Test
   def hacerMisiones  {
-    equipo = equipo.obtenerMiembro(ashe)
-    //equipo.obtenerMiembro(pikachu)
-    //equipo = equipo.obtenerMiembro(iroito)
-    var mision = new Mision(Set(pelearContraMonstruo), equipo => equipo.obtenerItem(armaduraElegante))
-    //equipo.realizarMision(mision)
-    ashe = ashe.setTrabajo(Mago)
     pikachu = pikachu.setTrabajo(Ladron)
-    iroito = iroito.setTrabajo(Ladron)
-    //ashe.equipar(palitoMagico)
     
-    equipo = equipo.obtenerItem(armaduraElegante)
-   
+    equipo = equipo.obtenerMiembro(coco)
+    equipo = equipo.obtenerMiembro(ashe)
+    equipo = equipo.obtenerMiembro(pikachu)
+    
+//    equipo.lider() match {
+//      case Some(h) => println(h)
+//      case None => println("no hay lider claro")
+//    }
+    
+    var mision = new Mision(Set(pelearContraMonstruo), equipo => equipo.obtenerItem(armaduraElegante))
+    
+    //(Equipo,Throwable)
+    var tupla = equipo.realizarMision(mision)
+   println(tupla._1)
+   for( e <- tupla._1.heroes) println(e.inventario)
+ 
+   assertTrue(tupla._1.heroes.find { _.id == "pikachu" }.get.inventario.items("armadura") == armaduraElegante)
   }
 }
