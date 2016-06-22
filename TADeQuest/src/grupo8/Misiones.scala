@@ -42,6 +42,7 @@ abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[In
   def realizarla(equipo: Equipo): Try[Equipo] = {
     val cuantificador = facilidad(equipo,_:Heroe)
     val heroe = Try(equipo.mejoresHeroesSegun(cuantificador(_).get).head)
+
     heroe match {
       case Success(h) => Success(cambios(equipo,h))
       case Failure(f) => Failure(new TareaFallidaException(this)) 
@@ -53,7 +54,11 @@ object pelearContraMonstruo extends Tarea("Pelear contra Monstruo",
                                           {(e,h) => e.lider() match {
                                                 case Some(h) if(h.getTrabajo.getOrElse(null) == Guerrero) => Some(20)
                                                 case _ => Some(10)}}, 
-                                           {(e,h) => e.reemplazarMiembro(h.sumarStatBase(HP, -10),h)})
+                                           {(e,h) => if(h.getStats.get(Fuerza) < 20) 
+                                                         e.reemplazarMiembro(h.sumarStatBase(HP, -10),h) 
+                                                     else
+                                                       e
+                                           })
 
 object forzarPureta extends Tarea("Forzar Puerta",
                                   {(e,h) => Some(h.getStats.get(Inteligencia) + 10 * e.getHeroes.count(_.getTrabajo.getOrElse(null) == Ladron))},                

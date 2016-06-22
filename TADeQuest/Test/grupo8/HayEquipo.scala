@@ -97,7 +97,7 @@ class HayEquipo extends TAdeQuestPrueba{
   }
   
   @Test
-  def hacerMisiones  {
+  def hacerMisionPelearContraMounstro  {
     pikachu = pikachu.setTrabajo(Ladron)
     
     equipo = equipo.obtenerMiembro(coco)
@@ -112,10 +112,9 @@ class HayEquipo extends TAdeQuestPrueba{
     var mision = new Mision(Set(pelearContraMonstruo), equipo => equipo.obtenerItem(armaduraElegante))
     
     //(Equipo,Throwable)
-    var tupla = equipo.realizarMision(mision)
-   println(tupla._1)
-   for( e <- tupla._1.heroes) println(e.inventario)
- 
-   assertTrue(tupla._1.heroes.find { _.id == "pikachu" }.get.inventario.items("armadura") == armaduraElegante)
+    var (equipo2,estado) = equipo.realizarMision(mision)
+
+   assertTrue(equipo2.heroes.find { _.id == "pikachu" }.get.inventario.items("armadura") == armaduraElegante)
+   assertEquals(65, equipo2.heroes.find { _.id == "pikachu" }.get.getStats.get(HP))
   }
 }

@@ -26,7 +26,7 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
   }
   
   def obtenerItem(item: Item): Equipo = {
-    val funcion = { heroe: Heroe => heroe.equipar(item).getStatPrincipal.getOrElse(0) - heroe.getStatPrincipal.getOrElse(0) }
+    val funcion = { heroe: Heroe => heroe.equipar(item).getStatPrincipal.getOrElse(0) - heroe.getStatPrincipal.getOrElse(0)}
     
     mejoresHeroesSegun(funcion).headOption match {
       case Some(h)  => if (funcion(h) > 0 ) {copy(heroes = heroes.filterNot(x => x.id == h.id).+:(h.equipar(item)))} else {vender(item)}

@@ -55,7 +55,6 @@ class HeroesTrabajan extends TAdeQuestPrueba{
     assertEquals(pikachu.getStats.get(Fuerza), 100)
     assertEquals(pikachu.getStats.get(Velocidad), 10)
     assertEquals(pikachu.getStats.get(Inteligencia), 10)
-    
   }
   
 }
