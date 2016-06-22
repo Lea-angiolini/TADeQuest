@@ -124,28 +124,20 @@ class HayEquipo extends TAdeQuestPrueba{
     pikachu = pikachu.setTrabajo(Ladron)
     ashe = ashe.setTrabajo(Mago)
     coco = coco.setTrabajo(Guerrero)
-    
-    
+
     equipo = equipo.obtenerMiembro(ashe)
     equipo = equipo.obtenerMiembro(pikachu)
     equipo = equipo.obtenerMiembro(coco)
         
     var mision = new Mision(Set(forzarPureta), equipo => equipo.obtenerMiembro(iroito))
-    
-//    println(coco.getStats.get(HP))
-//    println(pikachu.statBase.sumarStat(HP, 500))
-//    println(pikachu.getStats.get(HP))
-   
     var (eq,estado) = equipo.realizarMision(mision)
     
-//    println(eq.heroes.find{_.id == "coco"}.get.getStats.get(HP))
     
-   
-    assertTrue(compararStats(eq.heroes.find{_.id == "pikachu"}.get.statBase, new Stats(100,100,10,10)))
-    assertTrue(compararStats(eq.heroes.find{_.id == "ashe"}.get.statBase, new Stats(100,30,40,60)))
+    assertTrue(compararStats(eq.heroes.find{_.id == "pikachu"}.get.getStats, new Stats(95,100,20,10)))
+    assertTrue(compararStats(eq.heroes.find{_.id == "ashe"}.get.getStats, new Stats(100,10,40,80)))
     assertTrue(eq.heroes.contains(iroito))
-//    assertEquals(eq.heroes.find{_.id == "coco"}.get.getStats.get(HP), 95)//TODO!
-//    assertEquals(eq.heroes.find{_.id == "coco"}.get.getStats.get(Fuerza), 101)//TODO!
+    assertTrue(compararStats(new Stats(100,10,40,80),eq.heroes.find{_.id == "ashe"}.get.getStats))
+
   }
   
 //  @Test
