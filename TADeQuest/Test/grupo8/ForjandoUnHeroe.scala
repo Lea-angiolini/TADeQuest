@@ -123,13 +123,11 @@ class ForjandoUnHeroe extends TAdeQuestPrueba{
   }
   
 //  @Test
-//  def asd = {
-//    var equipo = new Equipo("los patos", List(ashe,coco))
-//    var mision = new Mision(Set(new pelearContraMonstruo), equipo => equipo.obtenerMiembro(pepe))
-//    
-//    equipo.realizarMision(mision)
-//    println(ashe.getTrabajo)
-//    ashe.setTrabajo(new Ladron)
-//    println(ashe)
+//  def asd {
+//    ashe.getStats
+//    ashe = ashe.descartarTrabajo
+//    //ashe = ashe.setTrabajo(Guerrero)
+//    ashe = ashe.equipar(talismanDedicacion)
+//    println(ashe.getStats)
 //  }
 }

@@ -33,14 +33,21 @@ class TAdeQuestPrueba {
    pepe = pepe.setTrabajo(Ladron)
    
    cascoVikingo = new Sombrero("Casco vikingo", x => new Stats(10,0,0,0), x => x.getStatBase.get(Fuerza) > 30)
+   
    palitoMagico = new ArmaDeUnaMano("Palito Mágico", x => new Stats(0,0,0,20), 
                      x => x.getTrabajo.getOrElse(null) == Mago || (x.getTrabajo.getOrElse(null) == Ladron && x.getStatBase.get(Inteligencia) > 30))
+   
    armaduraElegante = new Armadura("Armadura Elegante-Sport", x => new Stats(-30,0,30,0), x => true)
+   
    arcoViejo = new ArmaDeDosManos("Arco Viejo", x => new Stats(0,2,0,0), x => true)
+   
    escudoAntiRobo = new Escudo("Escudo Anti-Robo", x => new Stats(20,0,0,0), x => x.getTrabajo.getOrElse(null) != Ladron && x.getStatBase.get(Fuerza) >= 20)
+   
    talismanDedicacion = new Talisman("Talismán de Dedicacion", 
-                         {x => val valor: Int = (x.getStatPrincipal.getOrElse(0) * 0.1).toInt
-                           new Stats(valor,valor,valor,valor)}, x => true)
+                         {x => {val valor: Int = ((x.getTrabajo match {case Some(t) => t.getValorStatPrincipal
+                                                                      case None => 0}) * 0.1).toInt
+                                new Stats(valor,valor,valor,valor)}},
+                         {x => true})
    
    talismanDelMinimalismo = new Talisman("Talisman del minimalismo", 
                          {x => val cantItems: Int = (x.getInventario.items.size) 
@@ -48,6 +55,7 @@ class TAdeQuestPrueba {
                            new Stats(50-(10*cantItems),0,0,0)
                          
                          },x => true)
+   
    vinchaDelBuffaloDeAgua = new Sombrero("vincha Del Buffalo De Agua",
                                
                                x=>

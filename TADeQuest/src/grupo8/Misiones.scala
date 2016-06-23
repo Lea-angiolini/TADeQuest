@@ -10,11 +10,11 @@ case class Mision(tareas: Set[Tarea], ganancias: Equipo => Equipo){
   
   def realizarTareas(equipo: Equipo): (Equipo,Throwable) = {
     
-    val estadoFinal = tareas.foldLeft(Try(equipo))((estadoAnt,tareaActual) => 
+    val estadoFinal = tareas.foldLeft(Try(equipo))((estadoAnt,tareaActual) => {
       estadoAnt match {
         case Failure(e) => Failure(e)
         case Success(e) => tareaActual.realizarla(e)
-      })
+      }})
  
     estadoFinal match{
       case Failure(excep) => (equipo,excep)
@@ -41,8 +41,8 @@ abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[In
   
   def realizarla(equipo: Equipo): Try[Equipo] = {
     val cuantificador = facilidad(equipo,_:Heroe)
-    val heroe = Try(equipo.mejoresHeroesSegun(cuantificador(_).get).head)
-
+    val heroe = Try(equipo.mejoresHeroesSegun(cuantificador(_)).head)
+    
     heroe match {
       case Success(h) => Success(cambios(equipo,h))
       case Failure(f) => Failure(new TareaFallidaException(this)) 
@@ -51,7 +51,7 @@ abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[In
 }
 
 object pelearContraMonstruo extends Tarea("Pelear contra Monstruo", 
-                                          {(e,h) => e.lider() match {
+                                          {(e,h) => e.lider match {
                                                 case Some(h) if(h.getTrabajo.getOrElse(null) == Guerrero) => Some(20)
                                                 case _ => Some(10)}}, 
                                            {(e,h) => if(h.getStats.get(Fuerza) < 20) 
@@ -67,8 +67,8 @@ object forzarPureta extends Tarea("Forzar Puerta",
                                     case _ => e.reemplazarMiembro(h.sumarStatBase(Fuerza, 1).sumarStatBase(HP, -5),h)}})
 
 class robarTalisman(talisman: Talisman) extends Tarea("Robar Talismán",
-                                  {(e,h) => e.lider() match {
+                                  {(e,h) => {e.lider match {
                                     case Some(lider) if lider.getTrabajo.getOrElse(null) == Ladron => Some(h.getStats.get(Velocidad))
-                                    case _ => None}},
-                                  {(e,h) => e.obtenerItem(talisman)})
+                                    case _ => None}}},
+                                  {(e,h) => e.obtenerItem(talisman) })
 

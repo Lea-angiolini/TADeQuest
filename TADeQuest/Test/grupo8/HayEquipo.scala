@@ -33,7 +33,7 @@ class HayEquipo extends TAdeQuestPrueba{
     equipo = equipo.obtenerMiembro(ashe)
     equipo = equipo.obtenerMiembro(pikachu)
     
-    assertTrue(equipo.mejoresHeroesSegun { heroe => heroe.getStats.get(Inteligencia) }.contains(ashe))
+    assertTrue(equipo.mejoresHeroesSegun { heroe => Some(heroe.getStats.get(Inteligencia)) }.contains(ashe))
   }
   
   @Test
@@ -140,17 +140,19 @@ class HayEquipo extends TAdeQuestPrueba{
 
   }
   
-//  @Test
-//  def hacerMisionRobarTalisman{
+  @Test
+  def hacerMisionRobarTalisman{
+    
+    pikachu = pikachu.setTrabajo(Ladron)
+    
+    equipo = equipo.obtenerMiembro(pikachu)
+    
+    //equipo = equipo.obtenerItem(talismanDelMinimalismo)
+    var mision = new Mision(Set(new robarTalisman(talismanDedicacion)), equipo => equipo.obtenerItem(talismanMaldito))
+    
+    var (eq,es) = equipo.realizarMision(mision)
+    //println(eq)
 //    
-//    pikachu = pikachu.setTrabajo(Ladron)
-//    
-//    equipo = equipo.obtenerMiembro(pikachu)
-//    
-//    var mision = new Mision(Set(new robarTalisman(talismanDedicacion)), equipo => equipo)
-//    
-//    var (eq,es) = equipo.realizarMision(mision)
-//    
-//    assertTrue(eq.heroes.find{_.id == "pikachu"}.get.inventario.talismanes.contains(talismanDedicacion))
-//  }
+    assertTrue(eq.heroes.find{_.id == "pikachu"}.get.inventario.talismanes.contains(talismanDedicacion))
+  }
 }
