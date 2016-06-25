@@ -8,7 +8,7 @@ case class Mision(tareas: Set[Tarea], ganancias: Equipo => Equipo){
   
   def darGanancias(equipo: Equipo): Equipo = ganancias(equipo)
   
-  def realizarTareas(equipo: Equipo): (Equipo,Throwable) = {
+  def realizarTareas(equipo: Equipo): Try[Equipo] = {
     
     val estadoFinal = tareas.foldLeft(Try(equipo))((estadoAnt,tareaActual) => {
       estadoAnt match {
@@ -17,8 +17,8 @@ case class Mision(tareas: Set[Tarea], ganancias: Equipo => Equipo){
       }})
  
     estadoFinal match{
-      case Failure(excep) => (equipo,excep)
-      case Success(equipo) => (darGanancias(equipo),null)
+      case Failure(excep) => Failure(excep)
+      case Success(equipo) => Success(darGanancias(equipo))
     }
   }
 }
@@ -41,11 +41,11 @@ abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[In
   
   def realizarla(equipo: Equipo): Try[Equipo] = {
     val cuantificador = facilidad(equipo,_:Heroe)
-    val heroe = Try(equipo.mejoresHeroesSegun(cuantificador(_)).head)
+    val heroe = Try(equipo.mejoresHeroesSegun(cuantificador(_).get).head)
     
     heroe match {
       case Success(h) => Success(cambios(equipo,h))
-      case Failure(f) => Failure(new TareaFallidaException(this)) 
+      case Failure(f) => Failure(new TareaFallidaException(this,equipo)) 
     }
   }
 }
@@ -60,7 +60,7 @@ object pelearContraMonstruo extends Tarea("Pelear contra Monstruo",
                                                        e
                                            })
 
-object forzarPureta extends Tarea("Forzar Puerta",
+object forzarPuerta extends Tarea("Forzar Puerta",
                                   {(e,h) => Some(h.getStats.get(Inteligencia) + 10 * e.getHeroes.count(_.getTrabajo.getOrElse(null) == Ladron))},                
                                   {(e,h) => h.getTrabajo match {
                                     case Some(t) if t == Ladron || t == Mago => e
@@ -72,3 +72,7 @@ class robarTalisman(talisman: Talisman) extends Tarea("Robar Talismán",
                                     case _ => None}}},
                                   {(e,h) => e.obtenerItem(talisman) })
 
+
+object nadiePuedeHacerla extends Tarea("Nadie puede hacerla",
+                                      {(e,h) => None},
+                                      {(e,h) => e})

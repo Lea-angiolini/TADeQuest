@@ -14,11 +14,11 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
     adherirAlPozoComun(item.getValor)
   }
     
-  def mejoresHeroesSegun(cuantificador: (Heroe => Option[Int])): List[Heroe] = {
+  def mejoresHeroesSegun(cuantificador: (Heroe => Int)): List[Heroe] = {
     heroes.filter { cuantificador(_) == heroes.map { cuantificador(_) }.max }
   }
   
-  def mejorHeroeSegun(cuantificador: (Heroe => Option[Int])): Option[Heroe] = { 
+  def mejorHeroeSegun(cuantificador: (Heroe => Int)): Option[Heroe] = { 
     mejoresHeroesSegun(cuantificador) match {
       case h :: Nil => Some(h)
       case _ => None
@@ -26,10 +26,10 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
   }
   
   def obtenerItem(item: Item): Equipo = {
-    val funcion = { heroe: Heroe => Some(heroe.equipar(item).getValorStatPrincipal.getOrElse(0) - heroe.getValorStatPrincipal.getOrElse(0))}
+    val funcion = { heroe: Heroe => heroe.equipar(item).getValorStatPrincipal.getOrElse(0) - heroe.getValorStatPrincipal.getOrElse(0)}
     
     mejoresHeroesSegun(funcion).headOption match {
-      case Some(h)  => if (funcion(h).get > 0 ) {reemplazarMiembro(h.equipar(item), h)} else {vender(item)}
+      case Some(h)  => if (funcion(h) > 0 ) {reemplazarMiembro(h.equipar(item), h)} else {vender(item)}
       case None => {vender(item)}
     }
   }
@@ -47,14 +47,14 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
   } 
   
   def lider():Option[Heroe] = {
-    mejorHeroeSegun(heroe => Some(heroe.getValorStatPrincipal.getOrElse(0)))
+    mejorHeroeSegun(heroe => heroe.getValorStatPrincipal.getOrElse(0))
   }
   
   def realizarTarea(tarea: Tarea): Try[Equipo] = {
     tarea.realizarla(this)
   }
   
-  def realizarMision(mision: Mision): (Equipo,Throwable) = {
+  def realizarMision(mision: Mision): Try[Equipo] = {
     mision.realizarTareas(this)
   }
 

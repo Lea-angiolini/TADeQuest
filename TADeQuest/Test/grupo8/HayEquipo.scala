@@ -33,7 +33,7 @@ class HayEquipo extends TAdeQuestPrueba{
     equipo = equipo.obtenerMiembro(ashe)
     equipo = equipo.obtenerMiembro(pikachu)
     
-    assertTrue(equipo.mejoresHeroesSegun { heroe => Some(heroe.getStats.get(Inteligencia)) }.contains(ashe))
+    assertTrue(equipo.mejoresHeroesSegun { heroe => heroe.getStats.get(Inteligencia) }.contains(ashe))
   }
   
   @Test
@@ -112,10 +112,10 @@ class HayEquipo extends TAdeQuestPrueba{
     var mision = new Mision(Set(pelearContraMonstruo), equipo => equipo.obtenerItem(armaduraElegante))
     
     //(Equipo,Throwable)
-    var (equipo2,estado) = equipo.realizarMision(mision)
+    equipo = equipo.realizarMision(mision).get
 
-   assertTrue(equipo2.heroes.find { _.id == "pikachu" }.get.inventario.items("armadura") == armaduraElegante)
-   assertEquals(65, equipo2.heroes.find { _.id == "pikachu" }.get.getStats.get(HP))
+   assertTrue(equipo.heroes.find { _.id == "pikachu" }.get.inventario.items("armadura") == armaduraElegante)
+   assertEquals(65, equipo.heroes.find { _.id == "pikachu" }.get.getStats.get(HP))
   }
   
   @Test
@@ -129,14 +129,14 @@ class HayEquipo extends TAdeQuestPrueba{
     equipo = equipo.obtenerMiembro(pikachu)
     equipo = equipo.obtenerMiembro(coco)
         
-    var mision = new Mision(Set(forzarPureta), equipo => equipo.obtenerMiembro(iroito))
-    var (eq,estado) = equipo.realizarMision(mision)
+    var mision = new Mision(Set(forzarPuerta), equipo => equipo.obtenerMiembro(iroito))
+    equipo = equipo.realizarMision(mision).get
     
     
-    assertTrue(compararStats(eq.heroes.find{_.id == "pikachu"}.get.getStats, new Stats(95,100,20,10)))
-    assertTrue(compararStats(eq.heroes.find{_.id == "ashe"}.get.getStats, new Stats(100,10,40,80)))
-    assertTrue(eq.heroes.contains(iroito))
-    assertTrue(compararStats(new Stats(100,10,40,80),eq.heroes.find{_.id == "ashe"}.get.getStats))
+    assertTrue(compararStats(equipo.heroes.find{_.id == "pikachu"}.get.getStats, new Stats(95,100,20,10)))
+    assertTrue(compararStats(equipo.heroes.find{_.id == "ashe"}.get.getStats, new Stats(100,10,40,80)))
+    assertTrue(equipo.heroes.contains(iroito))
+    assertTrue(compararStats(new Stats(100,10,40,80),equipo.heroes.find{_.id == "ashe"}.get.getStats))
 
   }
   
@@ -147,12 +147,16 @@ class HayEquipo extends TAdeQuestPrueba{
     
     equipo = equipo.obtenerMiembro(pikachu)
     
-    //equipo = equipo.obtenerItem(talismanDelMinimalismo)
     var mision = new Mision(Set(new robarTalisman(talismanDedicacion)), equipo => equipo.obtenerItem(talismanMaldito))
     
-    var (eq,es) = equipo.realizarMision(mision)
-    //println(eq)
-//    
-    assertTrue(eq.heroes.find{_.id == "pikachu"}.get.inventario.talismanes.contains(talismanDedicacion))
+    equipo = equipo.realizarMision(mision).get
+    
+    assertTrue(equipo.heroes.find{_.id == "pikachu"}.get.inventario.talismanes.contains(talismanDedicacion))
   }
+  
+  @Test
+  def tareaQueNoSePuedeHacer {
+    var equipo = new Equipo("Los 3 chiflados", List(ashe,coco,pepe))
+    assertTrue(equipo.realizarTarea(nadiePuedeHacerla).isFailure)
+    }
 }
