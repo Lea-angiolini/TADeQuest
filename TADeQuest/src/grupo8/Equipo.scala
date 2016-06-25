@@ -57,5 +57,46 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
   def realizarMision(mision: Mision): Try[Equipo] = {
     mision.realizarTareas(this)
   }
+  
+  def entrenar(tablon: Tablon, criterio: (Equipo,Equipo) => Boolean): Equipo = {
+    var restantes = tablon
+    var equipoEntrenando = this
+    
+    while(restantes.tieneMisiones){
+      elegirMision(restantes, criterio) match {
+        case Some(m) => {
+                         equipoEntrenando = equipoEntrenando.realizarMision(m).get;
+                         restantes = restantes.sacarMision(m)
+                         }
+        case None => restantes = new Tablon
+      }      
+      
+    }
+    
+    equipoEntrenando
+  }
+  
+  def elegirMision(tablon: Tablon, criterio: (Equipo,Equipo) => Boolean): Option[Mision] = {
+        
+    val misionElegida = tablon.getMisiones.reduce (
+                      (provisoria,siguiente) =>      
+                        (provisoria.realizarTareas(this), siguiente.realizarTareas(this)) match {
+                        case (Failure(t),Success(equipo)) => siguiente
+                        
+                        case (Success(equipo1),Success(equipo2)) => {
+                           if(criterio(equipo1,equipo2))
+                               provisoria
+                           else
+                               siguiente
+                            }
+                        
+                        case (_,Failure(t2)) => provisoria
+                        })
+                        
+    misionElegida.realizarTareas(this) match {
+      case Success(e) => Some(misionElegida)
+      case Failure(t) => None
+    }
+  }
 
 }

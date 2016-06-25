@@ -11,6 +11,7 @@ class LaTarberna extends TAdeQuestPrueba {
   var mision1: Mision = null
   var mision2: Mision = null
   var mision3: Mision = null
+  var tablon: Tablon = null
   
   @Before
   override def setup{
@@ -29,9 +30,9 @@ class LaTarberna extends TAdeQuestPrueba {
   def mejorMision  {
     
     // La mision3 no la pueden realizar porque el lider no es un ladrón
-    var taberna = new Taberna(new Tablon(Set(misionfalla,mision1,mision2,misionfalla,mision3)))
+    tablon = new Tablon(Set(misionfalla,mision1,mision2,misionfalla,mision3))
     
-    val mejorMision = taberna.getTablon.elegirMision2(equipo, (e1,e2) => e1.pozoComun > e2.pozoComun)
+    val mejorMision = equipo.elegirMision(tablon, (e1,e2) => e1.pozoComun > e2.pozoComun)
     
     
     assertEquals(0, equipo.pozoComun)//el equipo no sufre cambios
@@ -41,11 +42,11 @@ class LaTarberna extends TAdeQuestPrueba {
   @Test
   def heroesEntrenan  {
       
-    var taberna = new Taberna(new Tablon(Set(mision2,mision1)))
+    tablon = new Tablon(Set(mision2,mision1))
     
     equipo = new Equipo("Los 3 chiflados", List(ashe,coco,pepe))
     
-    equipo = taberna.entrenar(equipo, (e1,e2) => e1.pozoComun > e2.pozoComun)
+    equipo = equipo.entrenar(tablon, (e1,e2) => e1.pozoComun > e2.pozoComun)
     
     assertEquals(600, equipo.pozoComun)
   }
@@ -53,11 +54,11 @@ class LaTarberna extends TAdeQuestPrueba {
   @Test
   def heroesNoEntrenanEquipoNoSufreEfecto  {
       
-    var taberna = new Taberna(new Tablon(Set(misionfalla)))
+   tablon = new Tablon(Set(misionfalla))
     
     equipo = new Equipo("Los 3 chiflados", List(ashe,coco,pepe))
     
-    equipo = taberna.entrenar(equipo, (e1,e2) => e1.pozoComun > e2.pozoComun)
+    equipo = equipo.entrenar(tablon, (e1,e2) => e1.pozoComun > e2.pozoComun)
     
     assertEquals(0, equipo.pozoComun)
   }
@@ -65,11 +66,11 @@ class LaTarberna extends TAdeQuestPrueba {
   @Test
   def heroesEntrenanListaVaciaNoRompe  {
       
-    var taberna = new Taberna(new Tablon(Set()))
+    tablon = new Tablon(Set())
     
     equipo = new Equipo("Magios", List(ashe,coco,pepe))
     
-    equipo = taberna.entrenar(equipo, (e1,e2) => e1.pozoComun > e2.pozoComun)
+    equipo = equipo.entrenar(tablon, (e1,e2) => e1.pozoComun > e2.pozoComun)
     
     assertEquals(0, equipo.pozoComun)
   }
