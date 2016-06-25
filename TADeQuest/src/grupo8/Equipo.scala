@@ -26,11 +26,11 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
   }
   
   def obtenerItem(item: Item): Equipo = {
-    val funcion = { heroe: Heroe => heroe.equipar(item).getValorStatPrincipal.getOrElse(0) - heroe.getValorStatPrincipal.getOrElse(0)}
+    val criterio = { heroe: Heroe => heroe.equipar(item).getValorStatPrincipal.getOrElse(0) - heroe.getValorStatPrincipal.getOrElse(0)}
     
-    mejoresHeroesSegun(funcion).headOption match {
-      case Some(h)  => if (funcion(h) > 0 ) {reemplazarMiembro(h.equipar(item), h)} else {vender(item)}
-      case None => {vender(item)}
+    mejoresHeroesSegun(criterio).headOption match {
+      case Some(h)  => if (criterio(h) > 0 ) {reemplazarMiembro(h.equipar(item), h)} else {vender(item)}
+      case None => {vender(item)}//TODO ver fold
     }
   }
  

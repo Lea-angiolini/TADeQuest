@@ -35,7 +35,7 @@ case class Heroe(id: String, statBase: Stats, inventario: Inventario = new Inven
   def getInventario: Inventario = this.inventario
   
   def getValorStatPrincipal: Option[Int] =  getTrabajo match {
-    case Some(t) => Some(this.getStats.get(t.getStatPrincipal.get))
+    case Some(t) => Some(this.getStats.get(t.getStatPrincipal.get))//TODO map
     case None => None
   }
 }

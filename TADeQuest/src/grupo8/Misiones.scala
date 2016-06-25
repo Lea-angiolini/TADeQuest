@@ -2,7 +2,13 @@ package grupo8
 
 import scala.util._
 
+
+
 case class Mision(tareas: Set[Tarea], ganancias: Equipo => Equipo){
+
+ implicit class ListConFoldLoco[T](list:List[T]){
+  def foldLoco[A](criterio:(T,T)=>Boolean)(seed:A)(f:(A,T)=>A) = ???
+}
   
   def getTareas = tareas
   
