@@ -57,24 +57,6 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
     mision.realizarTareas(this)
   }
   
-  def entrenar(tablon: Tablon, criterio: (Equipo,Equipo) => Boolean): Equipo = {
-    var restantes = tablon
-    var equipoEntrenando = this
-    
-    while(restantes.tieneMisiones){
-      elegirMision(restantes, criterio) match {
-        case Some(m) => {
-                         equipoEntrenando = equipoEntrenando.realizarMision(m).get;
-                         restantes = restantes.sacarMision(m)
-                         }
-        case None => restantes = new Tablon
-      }      
-      
-    }
-    
-    equipoEntrenando
-  }
-  
   def elegirMision(tablon: Tablon, criterio: (Equipo,Equipo) => Boolean): Option[Mision] = {
         
     val misionesRealizables = tablon.getMisiones.map { mision => (mision,mision.realizarTareas(this)) }
@@ -84,6 +66,11 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
     
     Try(misionesRealizables.maxBy(TuplaMisionEstado => TuplaMisionEstado._2.get)(comparador)._1).toOption
      
+  }
+  
+  def entrenar(tablon: Tablon, criterio: (Equipo,Equipo) => Boolean): Equipo = {
+    //tablon.realizarMisiones(elegirMision(_, criterio))(this)(realizarMision(_).get)
+    tablon.realizarMisionesConCriterio(elegirMision(_, criterio))(this)
   }
 
 }

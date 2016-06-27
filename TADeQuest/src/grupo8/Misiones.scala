@@ -2,14 +2,8 @@ package grupo8
 
 import scala.util._
 
-
-
 case class Mision(tareas: Set[Tarea], ganancias: Equipo => Equipo){
 
- implicit class ListConFoldLoco[T](list:List[T]){
-  def foldLoco[A](criterio:(T,T)=>Boolean)(seed:A)(f:(A,T)=>A) = ???
-}
-  
   def getTareas = tareas
   
   def darGanancias(equipo: Equipo): Equipo = ganancias(equipo)
@@ -19,9 +13,7 @@ case class Mision(tareas: Set[Tarea], ganancias: Equipo => Equipo){
     tareas.foldLeft(Try(equipo))((estadoAnt,tareaActual) => estadoAnt.flatMap( tareaActual.realizarla(_) ))
           .map( darGanancias(_) )
   }
-  
 }
-
 
 abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[Int], cambios: (Equipo,Heroe) => Equipo){
 
