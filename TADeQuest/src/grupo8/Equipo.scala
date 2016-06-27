@@ -69,8 +69,7 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
   }
   
   def entrenar(tablon: Tablon, criterio: (Equipo,Equipo) => Boolean): Equipo = {
-    //tablon.realizarMisiones(elegirMision(_, criterio))(this)(realizarMision(_).get)
-    tablon.realizarMisionesConCriterio(elegirMision(_, criterio))(this)
+    tablon.realizarMisionesConCriterio(this,criterio)
   }
 
 }

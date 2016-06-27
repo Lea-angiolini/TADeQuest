@@ -14,9 +14,10 @@ case class Tablon(misiones: Set[Mision] = Set[Mision]()) {
   
   def sacarMision(mision: Mision) = copy(misiones - mision)
 
-  def realizarMisionesConCriterio(criterio: Tablon => Option[Mision])(equipo:Equipo): Equipo = {
+  def realizarMisionesConCriterio(equipo:Equipo, criterio: (Equipo,Equipo) => Boolean): Equipo = {
    
-    criterio(this).fold(equipo)(m => sacarMision(m).realizarMisionesConCriterio(criterio)(equipo.realizarMision(m).get))
+    equipo.elegirMision(this, criterio)
+                    .fold(equipo)(m => sacarMision(m).realizarMisionesConCriterio(equipo.realizarMision(m).get,criterio))
 
   }
   

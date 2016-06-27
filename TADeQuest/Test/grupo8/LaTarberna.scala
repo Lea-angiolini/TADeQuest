@@ -41,7 +41,7 @@ class LaTarberna extends TAdeQuestPrueba {
   
   @Test
   def heroesEntrenan  {
-      
+    
     tablon = new Tablon(Set(mision2,mision1))
     
     equipo = new Equipo("Los 3 chiflados", List(ashe,coco,pepe))
@@ -49,6 +49,43 @@ class LaTarberna extends TAdeQuestPrueba {
     equipo = equipo.entrenar(tablon, (e1,e2) => e1.pozoComun > e2.pozoComun)
     
     assertEquals(600, equipo.pozoComun)
+  }
+  
+ @Test
+  def heroesNoPuedenHacerSegundaMision  {
+    
+    var heroe = new Heroe("Conan",Stats(100,300,100,50))
+    heroe = heroe.setTrabajo(Guerrero)
+    
+    mision1 = new Mision(Set(pelearContraMonstruo), e => e.obtenerMiembro(heroe))
+    mision2 = new Mision(Set(new robarTalisman(talismanMaldito)), e => e.adherirAlPozoComun(1000))
+    
+    tablon = new Tablon(Set(mision2,mision1))
+    
+    equipo = new Equipo("Los 3 chiflados", List(ashe,coco,pepe))
+    
+    equipo = equipo.entrenar(tablon, (e1,e2) => e1.pozoComun > e2.pozoComun)
+    
+    assertEquals(0, equipo.pozoComun)
+    assertTrue(!equipo.getHeroes.find { h => h.id == heroe.id}.isEmpty)
+  }
+    
+  @Test
+  def heroesEntrenanSegundaMisionLaHacenSiHacenLaPrimera  {
+    
+    var heroe = new Heroe("Pibe Chorro",Stats(100,50,300,50))
+    heroe = heroe.setTrabajo(Ladron)
+    
+    mision1 = new Mision(Set(pelearContraMonstruo), e => e.obtenerMiembro(heroe))
+    mision2 = new Mision(Set(new robarTalisman(talismanMaldito)), e => e.adherirAlPozoComun(1000))
+    
+    tablon = new Tablon(Set(mision2,mision1))
+    
+    equipo = new Equipo("Los 3 chiflados", List(ashe,coco,pepe))
+    
+    equipo = equipo.entrenar(tablon, (e1,e2) => e1.pozoComun > e2.pozoComun)
+    
+    assertEquals(1100, equipo.pozoComun)
   }
   
   @Test
