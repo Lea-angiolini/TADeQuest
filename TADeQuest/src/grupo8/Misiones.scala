@@ -16,17 +16,10 @@ case class Mision(tareas: Set[Tarea], ganancias: Equipo => Equipo){
   
   def realizarTareas(equipo: Equipo): Try[Equipo] = {
     
-    val estadoFinal = tareas.foldLeft(Try(equipo))((estadoAnt,tareaActual) => {
-      estadoAnt match {
-        case Failure(e) => Failure(e)
-        case Success(e) => tareaActual.realizarla(e)
-      }})
- 
-    estadoFinal match{
-      case Failure(excep) => Failure(excep)
-      case Success(equipo) => Success(darGanancias(equipo))
-    }
+    tareas.foldLeft(Try(equipo))((estadoAnt,tareaActual) => estadoAnt.flatMap( tareaActual.realizarla(_) ))
+          .map( darGanancias(_) )
   }
+  
 }
 
 
@@ -35,10 +28,7 @@ abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[In
   def getDescripcion = descripcion
   
   def puedeRealizarla(equipo: Equipo, heroe: Heroe): Boolean = {
-    facilidad(equipo, heroe) match {
-      case Some(int) => true
-      case None => false
-    }
+    facilidad(equipo, heroe).fold(false)(x => true)
   }
   
   def facilidadPara(equipo:Equipo, heroe: Heroe): Option[Int] = {

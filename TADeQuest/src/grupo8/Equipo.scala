@@ -28,10 +28,9 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
   def obtenerItem(item: Item): Equipo = {
     val criterio = { heroe: Heroe => heroe.equipar(item).getValorStatPrincipal.getOrElse(0) - heroe.getValorStatPrincipal.getOrElse(0)}
     
-    mejoresHeroesSegun(criterio).headOption match {
-      case Some(h)  => if (criterio(h) > 0 ) {reemplazarMiembro(h.equipar(item), h)} else {vender(item)}
-      case None => {vender(item)}//TODO ver fold
-    }
+    mejoresHeroesSegun(criterio).headOption
+                                .filter(criterio(_) > 0 )
+                                .fold(vender(item))(h => reemplazarMiembro(h.equipar(item), h))
   }
  
   def obtenerMiembro(heroe: Heroe): Equipo = {
@@ -78,25 +77,13 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
   
   def elegirMision(tablon: Tablon, criterio: (Equipo,Equipo) => Boolean): Option[Mision] = {
         
-    val misionElegida = tablon.getMisiones.reduce (
-                      (provisoria,siguiente) =>      
-                        (provisoria.realizarTareas(this), siguiente.realizarTareas(this)) match {
-                        case (Failure(t),Success(equipo)) => siguiente
-                        
-                        case (Success(equipo1),Success(equipo2)) => {
-                           if(criterio(equipo1,equipo2))
-                               provisoria
-                           else
-                               siguiente
-                            }
-                        
-                        case (_,Failure(t2)) => provisoria
-                        })
-                        
-    misionElegida.realizarTareas(this) match {
-      case Success(e) => Some(misionElegida)
-      case Failure(t) => None
-    }
+    val misionesRealizables = tablon.getMisiones.map { mision => (mision,mision.realizarTareas(this)) }
+                                                .filter { TuplaMisionEstado => TuplaMisionEstado._2.isSuccess }
+                                                
+    val comparador = Ordering.fromLessThan[Equipo]((equipo1,equipo2) => criterio(equipo1,equipo2)).reverse
+    
+    Try(misionesRealizables.maxBy(TuplaMisionEstado => TuplaMisionEstado._2.get)(comparador)._1).toOption
+     
   }
 
 }
