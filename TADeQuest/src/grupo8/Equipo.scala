@@ -13,7 +13,11 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
   def vender(item: Item): Equipo = {
     adherirAlPozoComun(item.getValor)
   }
-    
+  
+  def heroesAptos(condicion: Heroe => Boolean): Equipo = {
+   copy(heroes= heroes.filter { condicion(_) }) 
+  }
+  
   def mejoresHeroesSegun(cuantificador: (Heroe => Int)): List[Heroe] = {
     heroes.filter { cuantificador(_) == heroes.map { cuantificador(_) }.max }
   }
@@ -69,7 +73,8 @@ case class Equipo(nombre: String, heroes: List[Heroe] = List(), pozoComun: Int =
   }
   
   def entrenar(tablon: Tablon, criterio: (Equipo,Equipo) => Boolean): Equipo = {
-    tablon.realizarMisionesConCriterio(this,criterio)
+    //tablon.realizarMisionesConCriterio(this,criterio)
+    tablon.realizarMisiones(this)((equipo,tablon) => equipo.elegirMision(tablon, criterio))((equipo,mision) => equipo.realizarMision(mision).get)
   }
 
 }

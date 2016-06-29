@@ -19,19 +19,22 @@ abstract class Tarea(descripcion: String, facilidad: (Equipo,Heroe) => Option[In
 
   def getDescripcion = descripcion
   
-  def puedeRealizarla(equipo: Equipo, heroe: Heroe): Boolean = {
-    facilidad(equipo, heroe).fold(false)(x => true)
-  }
+  def puedeRealizarla(equipo: Equipo, heroe: Heroe): Boolean =  facilidad(equipo, heroe).isDefined
   
-  def facilidadPara(equipo:Equipo, heroe: Heroe): Option[Int] = {
-    facilidad(equipo, heroe)
+  def facilidadPara(equipo:Equipo, heroe: Heroe): Option[Int] = facilidad(equipo, heroe)
+  
+  def  heroeMasApto(equipo: Equipo): Try[Heroe] = {
+    val cuantificador = facilidad(equipo,_: Heroe)
+    val condicion = puedeRealizarla(equipo, _: Heroe)
+    
+    val equipoApto = equipo.heroesAptos(condicion)
+    
+    Try(equipoApto.mejoresHeroesSegun(cuantificador(_).get).head)
   }
   
   def realizarla(equipo: Equipo): Try[Equipo] = {
-    val cuantificador = facilidad(equipo,_:Heroe)
-    val heroe = Try(equipo.mejoresHeroesSegun(cuantificador(_).get).head)
-    
-    heroe match {
+   
+    heroeMasApto(equipo) match {
       case Success(h) => Success(cambios(equipo,h))
       case Failure(f) => Failure(new TareaFallidaException(this,equipo)) 
     }
